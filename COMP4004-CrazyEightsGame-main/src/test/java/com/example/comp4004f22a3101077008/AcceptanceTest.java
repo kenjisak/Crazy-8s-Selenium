@@ -5,6 +5,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -57,26 +58,47 @@ public class AcceptanceTest {
     @DirtiesContext
     public void closeGameDrivers(){
         for (WebDriver webDriver : allDrivers) {//close all drivers after
-            webDriver.close();
+            webDriver.quit();
         }
     }
     @Test
     @DirtiesContext
     public void testRow25() throws InterruptedException {
-        rigTestRow25();
-        int gameDeckCount = gd.getCards().size() + 1;//current size after cards dealt, plus top card.
-
-        for(Player p :gd.getPlayers()){
-            assertEquals(5,p.handSize());
-            gameDeckCount += p.handSize();
-        }
-        assertEquals(52,gameDeckCount);
+        rigTestRow25();//rigs deck for this test
 
         WebDriverWait wait = new WebDriverWait(allDrivers[0], Duration.ofSeconds(20));
         wait.until(ExpectedConditions.elementToBeClickable (By.id("startBtn"))).click();//waits till start button pops up and starts the game with the rigged deck
 
-        assertEquals(5,gd.getPlayers().get(0).cards.size());
-        TimeUnit.SECONDS.sleep(10);
+        verifyDeckCount();
+
+        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+
+        for (WebDriver playerBrowser : allDrivers) {//check all players windows they display the correct starting top card
+            String topCard = playerBrowser.findElement(By.className("topCard")).getAttribute("id");
+            assertEquals("5C",topCard);
+        }
+
+        allDrivers[0].findElement(By.id("3C")).click();//P1 plays 3C
+        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+
+        for (int i = 0; i < allDrivers.length; i++) {
+
+            String topCard = allDrivers[i].findElement(By.className("topCard")).getAttribute("id");
+            assertEquals("3C",topCard);//check all players windows they display the correct starting top card
+
+            String playerTurn = allDrivers[i].findElement(By.id("turnID")).getText();
+            assertEquals("Turn: 2",playerTurn);//check all players windows they display player 2 as current turn
+
+            WebElement drawBtn = allDrivers[i].findElement(By.id("draw"));
+            if (i == 1){
+                assertTrue(drawBtn.isEnabled());
+            }//assert only player 2 draw button is enabled
+            else{
+                assertFalse(drawBtn.isEnabled());
+            }
+        }
+
+
     }
     ////////////////////////////////RIGGING FUNCTIONS////////////////////////////////
     public void rigTestRow25(){
@@ -132,4 +154,13 @@ public class AcceptanceTest {
         return cardsList;
     }
 
+    public void verifyDeckCount(){//just to double check the deck dealt added up to 52
+        int gameDeckCount = gd.getCards().size() + 1;//current size after cards dealt, plus top card.
+
+        for(Player p :gd.getPlayers()){
+            gameDeckCount += p.handSize();
+            assertEquals(5,p.handSize());
+        }
+        assertEquals(52,gameDeckCount);
+    }
 }
