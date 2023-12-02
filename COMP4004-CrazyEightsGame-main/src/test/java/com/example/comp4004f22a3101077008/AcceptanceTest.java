@@ -50,6 +50,25 @@ public class AcceptanceTest {
             allDrivers[i] = new ChromeDriver(options);
             allDrivers[i].get("http://localhost:" + port);
 
+            int screenWidth = 1920/2;
+            int screenHeight = 1080/2;
+            int x,y;
+            if (i == 0){
+                x = 0;
+                y = 0;
+            } else if (i == 1) {
+                x = screenWidth;
+                y = 0;
+            } else if (i == 2) {
+                x = 0;
+                y = screenHeight;
+            }else{
+                x = screenWidth;
+                y = screenHeight;
+            }
+            allDrivers[i].manage().window().setPosition(new org.openqa.selenium.Point(x, y));
+            allDrivers[i].manage().window().setSize(new org.openqa.selenium.Dimension(screenWidth, screenHeight));
+
             WebDriverWait wait = new WebDriverWait(allDrivers[i], Duration.ofSeconds(20));
             wait.until(ExpectedConditions.elementToBeClickable (By.id("usernameBtn"))).click();//waits till register button pops up then click
         }

@@ -9,16 +9,12 @@ function connect() {
     var socket = new SockJS("/crazy8-websocket");
     stompClient = Stomp.over(socket);
     console.log("Attempting connection...");
-    stompClient.connect(
-      {},
-      function (frame) {
-        console.log("Connected: " + frame);
-        resolve();
-      },
-      function (error) {
-        reject(error);
-      }
-    );
+    stompClient.connect({}, function (frame) {
+      console.log("Connected: " + frame);
+      resolve();
+    }, function (error) {
+      reject(error);
+    });
   });
 }
 
@@ -53,9 +49,9 @@ function addCards() {
 function sendCard(card) {
   console.log(card);
   stompClient.send(
-    "/app/playCard",
-    {},
-    JSON.stringify({ name: id + " " + card })
+      "/app/playCard",
+      {},
+      JSON.stringify({ name: id + " " + card })
   );
 }
 
@@ -66,7 +62,7 @@ function parseStartCards(msg) {
 
 function sendName() {
   document.getElementById("usernameBtn").style.visibility = "hidden";
-  console.log("test1");
+  console.log("test1")
   stompClient.send("/app/connect", {}, JSON.stringify({ name: "" }));
 }
 
@@ -85,6 +81,8 @@ function drawCard() {
   stompClient.send("/app/drawCard", {}, JSON.stringify({ name: id }));
 }
 
+
+
 function changeSuit(suit) {
   document.getElementById("spade").style.visibility = "hidden";
   document.getElementById("heart").style.visibility = "hidden";
@@ -94,13 +92,11 @@ function changeSuit(suit) {
 }
 
 window.onload = () => {
-  connectToServer()
-    .then(() => {
-      console.log("Connection to server established!");
-    })
-    .catch((error) => {
-      console.error("Connection error: ", error);
-    });
+  connectToServer().then(() => {
+    console.log("Connection to server established!");
+  }).catch((error) => {
+    console.error("Connection error: ", error);
+  });
 };
 
 async function connectToServer() {
@@ -113,10 +109,10 @@ async function connectToServer() {
   }
 }
 
-function setupSubscriptions() {
+function setupSubscriptions(){
   stompClient.subscribe("/topic/message", function (greeting) {
     let msg = JSON.parse(greeting.body);
-    console.log("message", msg);
+    console.log("message", msg)
     if (msg.content === "id") {
       if (id === "0") {
         id = msg.id;
@@ -165,9 +161,8 @@ function setupSubscriptions() {
       x.setAttribute("id", "direction");
       x.appendChild(t);
       document.getElementById("nav").appendChild(x);
-      //this is the bug fix
-      if (document.getElementById("turnID") !== null) {
-        const element = document.getElementById("turnID");
+      if(document.getElementById("turnID")!==null){
+        const element = document.getElementById("turnID")
         element.remove();
       }
       let m = document.createElement("LABEL");
@@ -278,7 +273,9 @@ function setupSubscriptions() {
       addScore("3", msg.score3);
       addScore("4", msg.score4);
       let winTag = document.createElement("h1");
-      let textNode = document.createTextNode("WINNER IS PLAYER " + msg.winner);
+      let textNode = document.createTextNode(
+          "WINNER IS PLAYER " + msg.winner
+      );
       winTag.appendChild(textNode);
       winTag.setAttribute("id", "winMSG");
       winTag.setAttribute("class", "display-1");
@@ -359,6 +356,19 @@ function setupSubscriptions() {
         src: c,
         id: msg.topCard,
       });
+    }
+    else if(msg.content === "noMoreDraw"){
+      if (msg.id === id) {
+
+        let handInputs = document.getElementById("hand").getElementsByTagName("input");
+        for (let i = 0; i < handInputs.length; i++) {
+          handInputs[i].disabled = true;
+        }
+
+        $("#draw").attr("disabled",true);
+
+        addCard(msg.card);
+      }
     }
   });
 }
