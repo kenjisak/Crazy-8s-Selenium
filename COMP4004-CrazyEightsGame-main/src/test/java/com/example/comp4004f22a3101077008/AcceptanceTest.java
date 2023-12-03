@@ -541,10 +541,11 @@ public class AcceptanceTest {
             }
         }
     }
+    ////////////////////////////////////////////////////////////////////
     @Test
     @DirtiesContext
     @DisplayName("Test Row 35: Playability of Cards with Kings")
-    //top card is KC and player1 plays KH
+    //top card is KC and player 1 plays KH
     public void testRow35() throws InterruptedException {
         rigTestRow35();//rigs deck for this test
 
@@ -567,6 +568,38 @@ public class AcceptanceTest {
 
             String topCard = allDrivers[i].findElement(By.className("topCard")).getAttribute("id");
             assertEquals("KH",topCard);//check all players windows they display the correct starting top card
+
+            String playerTurn = allDrivers[i].findElement(By.id("turnID")).getText();
+            assertEquals("Turn: 2",playerTurn);//check all players windows they display player 2 as current turn
+        }
+
+    }
+    @Test
+    @DirtiesContext
+    @DisplayName("Test Row 36: Playability of Cards with King and a Numbered Card")
+    //top card is KC and player 1 plays 7C
+    public void testRow36() throws InterruptedException {
+        rigTestRow36();//rigs deck for this test
+
+        WebDriverWait wait = new WebDriverWait(allDrivers[0], Duration.ofSeconds(20));
+        wait.until(ExpectedConditions.elementToBeClickable (By.id("startBtn"))).click();//waits till start button pops up and starts the game with the rigged deck
+
+        verifyDeckCount();
+
+        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+
+        for (WebDriver playerBrowser : allDrivers) {//check all players windows they display the correct starting top card
+            String topCard = playerBrowser.findElement(By.className("topCard")).getAttribute("id");
+            assertEquals("KC",topCard);
+        }
+
+        allDrivers[0].findElement(By.id("7C")).click();//P1 plays 7C
+        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+
+        for (int i = 0; i < allDrivers.length; i++) {
+
+            String topCard = allDrivers[i].findElement(By.className("topCard")).getAttribute("id");
+            assertEquals("7C",topCard);//check all players windows they display the correct starting top card
 
             String playerTurn = allDrivers[i].findElement(By.id("turnID")).getText();
             assertEquals("Turn: 2",playerTurn);//check all players windows they display player 2 as current turn
@@ -792,6 +825,33 @@ public class AcceptanceTest {
     public void rigTestRow35(){
         String topCard = "KC";
         String p1Card = "KH";
+
+        String rig = "AH 2H 3H 4H 5H 6H 7H 8H 9H TH JH QH KH AS 2S 3S 4S 5S 6S 7S 8S 9S TS JS QS KS AC 2C 3C 4C 5C 6C 7C 8C 9C TC JC QC KC AD 2D 3D 4D 5D 6D 7D 8D 9D TD JD QD KD";//populated deck
+        rig = removeCard(rig,topCard);//remove cards we want to rig
+        rig = removeCard(rig,p1Card);
+        assertTrue(!rig.contains(topCard) && !rig.contains(p1Card));
+
+        ArrayList<Card> gameDeck = createCards(rig);
+        gd.setCards(gameDeck);//setCards with populated Deck
+        game.shuffleDeck(gd.getCards());//shuffle the deck, simulate more realism
+
+        //add top card back
+        gd.getCards().add(0, createCards(topCard).get(0));
+
+        //add back player rigged cards in correct spots
+        ArrayList<Card> p1Cards = createCards(p1Card);
+        gd.getCards().add(1,p1Cards.get(0));
+
+        gd.setTopCard(game.startSetTopCard(gd.getCards()));//set the top card
+
+        for (Player p : gd.getPlayers()) {//deal all players cards
+            game.startDealCards(gd.getCards(), gd.getPlayers(), p.getID() - 1);
+        }
+
+    }
+    public void rigTestRow36(){
+        String topCard = "KC";
+        String p1Card = "7C";
 
         String rig = "AH 2H 3H 4H 5H 6H 7H 8H 9H TH JH QH KH AS 2S 3S 4S 5S 6S 7S 8S 9S TS JS QS KS AC 2C 3C 4C 5C 6C 7C 8C 9C TC JC QC KC AD 2D 3D 4D 5D 6D 7D 8D 9D TD JD QD KD";//populated deck
         rig = removeCard(rig,topCard);//remove cards we want to rig
