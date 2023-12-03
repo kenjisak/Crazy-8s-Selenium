@@ -135,8 +135,10 @@ public class AcceptanceTest {
         for (WebDriver playerBrowser : allDrivers) {//check all players windows they display the correct starting top card
             String topCard = playerBrowser.findElement(By.className("topCard")).getAttribute("id");
             assertEquals("5H",topCard);
+
         }
 
+        String originalDirection = allDrivers[0].findElement(By.id("direction")).getText();//get original direction from p1
         allDrivers[0].findElement(By.id("AH")).click();//P1 plays 3C
         TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
 
@@ -148,10 +150,33 @@ public class AcceptanceTest {
             String playerTurn = allDrivers[i].findElement(By.id("turnID")).getText();
             assertEquals("Turn: 4",playerTurn);//check all players windows they display player 4 as current turn
 
+            String updatedDirection = allDrivers[i].findElement(By.id("direction")).getText();
+            assertTrue(updatedDirection.equals("right") && !updatedDirection.equals(originalDirection));//check all players windows they display direction change
+
             WebElement drawBtn = allDrivers[i].findElement(By.id("draw"));
             if (i == 3){
                 assertTrue(drawBtn.isEnabled());
-            }//assert only player 2 draw button is enabled
+            }//assert only player 4 draw button is enabled
+            else{
+                assertFalse(drawBtn.isEnabled());
+            }
+        }
+
+        allDrivers[3].findElement(By.id("7H")).click();//P4 plays 7H
+        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+
+        for (int i = 0; i < allDrivers.length; i++) {
+
+            String topCard = allDrivers[i].findElement(By.className("topCard")).getAttribute("id");
+            assertEquals("7H",topCard);//check all players windows they display the correct starting top card
+
+            String playerTurn = allDrivers[i].findElement(By.id("turnID")).getText();
+            assertEquals("Turn: 3",playerTurn);//check all players windows they display player 3 as current turn
+
+            WebElement drawBtn = allDrivers[i].findElement(By.id("draw"));
+            if (i == 2){
+                assertTrue(drawBtn.isEnabled());
+            }//assert only player 3 draw button is enabled
             else{
                 assertFalse(drawBtn.isEnabled());
             }
@@ -178,6 +203,9 @@ public class AcceptanceTest {
         ArrayList<Card> p1Cards = createCards(p1Card);
         gd.getCards().add(1,p1Cards.get(0));
 
+//        for (Card card: gd.getCards()) {
+//            System.out.print(card.getRank() + card.getSuit() + ", ");
+//        }
         gd.setTopCard(game.startSetTopCard(gd.getCards()));//set the top card
 
         for (Player p : gd.getPlayers()) {//deal all players cards
@@ -198,7 +226,7 @@ public class AcceptanceTest {
         rig = removeCard(rig,p1Card);
         rig = removeCard(rig,p4Card);
 
-        System.out.println(rig);
+//        System.out.println(rig);
 //        assertTrue(!rig.contains(topCard) && !rig.contains(p1Card));
 
         ArrayList<Card> gameDeck = createCards(rig);
