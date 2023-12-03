@@ -324,7 +324,7 @@ public class AcceptanceTest {
     }
     @Test
     @DirtiesContext
-    @DisplayName("Test Row 31: Next Turn Loops back to Player 1")
+    @DisplayName("Test Row 31: Turn Reversal and continuing player turn checks")
     //p4 plays 1H: assert next player is player 3 AND interface must show now playing in opposite direction (i.e., right)
     //player 3 plays 7H and next player is player 2
     public void testRow31() throws InterruptedException {
@@ -433,6 +433,104 @@ public class AcceptanceTest {
 
             String playerTurn = allDrivers[i].findElement(By.id("turnID")).getText();
             assertEquals("Turn: 2",playerTurn);//check all players windows they display player 2 as current turn
+
+            WebElement drawBtn = allDrivers[i].findElement(By.id("draw"));
+            if (i == 1){
+                assertTrue(drawBtn.isEnabled());
+            }//assert only player 2 draw button is enabled
+            else{
+                assertFalse(drawBtn.isEnabled());
+            }
+        }
+    }
+    @Test
+    @DirtiesContext
+    @DisplayName("Test Row 32: Player loop and skipping player turn with Queen")
+    //p4 plays 1H: assert next player is player 3 AND interface must show now playing in opposite direction (i.e., right)
+    //player 3 plays 7H and next player is player 2
+    public void testRow32() throws InterruptedException {
+        rigTestRow32();//rigs deck for this test
+
+        WebDriverWait wait = new WebDriverWait(allDrivers[0], Duration.ofSeconds(20));
+        wait.until(ExpectedConditions.elementToBeClickable (By.id("startBtn"))).click();//waits till start button pops up and starts the game with the rigged deck
+
+        verifyDeckCount();
+
+        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+
+        for (WebDriver playerBrowser : allDrivers) {//check all players windows they display the correct starting top card
+            String topCard = playerBrowser.findElement(By.className("topCard")).getAttribute("id");
+            assertEquals("4C",topCard);
+        }
+
+        allDrivers[0].findElement(By.id("5C")).click();//P1 plays 5C
+        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+
+        for (int i = 0; i < allDrivers.length; i++) {
+
+            String topCard = allDrivers[i].findElement(By.className("topCard")).getAttribute("id");
+            assertEquals("5C",topCard);//check all players windows they display the correct starting top card
+
+            String playerTurn = allDrivers[i].findElement(By.id("turnID")).getText();
+            assertEquals("Turn: 2",playerTurn);//check all players windows they display player 2 as current turn
+
+            WebElement drawBtn = allDrivers[i].findElement(By.id("draw"));
+            if (i == 1){
+                assertTrue(drawBtn.isEnabled());
+            }//assert only player 2 draw button is enabled
+            else{
+                assertFalse(drawBtn.isEnabled());
+            }
+        }
+        allDrivers[1].findElement(By.id("6C")).click();//P2 plays 6C
+        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+
+        for (int i = 0; i < allDrivers.length; i++) {
+
+            String topCard = allDrivers[i].findElement(By.className("topCard")).getAttribute("id");
+            assertEquals("6C",topCard);//check all players windows they display the correct starting top card
+
+            String playerTurn = allDrivers[i].findElement(By.id("turnID")).getText();
+            assertEquals("Turn: 3",playerTurn);//check all players windows they display player 3 as current turn
+
+            WebElement drawBtn = allDrivers[i].findElement(By.id("draw"));
+            if (i == 2){
+                assertTrue(drawBtn.isEnabled());
+            }//assert only player 3 draw button is enabled
+            else{
+                assertFalse(drawBtn.isEnabled());
+            }
+        }
+        allDrivers[2].findElement(By.id("7C")).click();//P3 plays 7C
+        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+
+        for (int i = 0; i < allDrivers.length; i++) {
+
+            String topCard = allDrivers[i].findElement(By.className("topCard")).getAttribute("id");
+            assertEquals("7C",topCard);//check all players windows they display the correct starting top card
+
+            String playerTurn = allDrivers[i].findElement(By.id("turnID")).getText();
+            assertEquals("Turn: 4",playerTurn);//check all players windows they display player 4 as current turn
+
+            WebElement drawBtn = allDrivers[i].findElement(By.id("draw"));
+            if (i == 3){
+                assertTrue(drawBtn.isEnabled());
+            }//assert only player 4 draw button is enabled
+            else{
+                assertFalse(drawBtn.isEnabled());
+            }
+        }
+
+        allDrivers[3].findElement(By.id("QC")).click();//P4 plays QC
+        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+
+        for (int i = 0; i < allDrivers.length; i++) {
+
+            String topCard = allDrivers[i].findElement(By.className("topCard")).getAttribute("id");
+            assertEquals("QC",topCard);//check all players windows they display the correct starting top card
+
+            String playerTurn = allDrivers[i].findElement(By.id("turnID")).getText();
+            assertEquals("Turn: 2",playerTurn);//check all players windows they display player 3 as current turn
 
             WebElement drawBtn = allDrivers[i].findElement(By.id("draw"));
             if (i == 1){
@@ -580,6 +678,48 @@ public class AcceptanceTest {
         String p2Card = "6H";
         String p3Card = "9H 7H";
         String p4Card = "AH";
+
+        String rig = "AH 2H 3H 4H 5H 6H 7H 8H 9H TH JH QH KH AS 2S 3S 4S 5S 6S 7S 8S 9S TS JS QS KS AC 2C 3C 4C 5C 6C 7C 8C 9C TC JC QC KC AD 2D 3D 4D 5D 6D 7D 8D 9D TD JD QD KD";//populated deck
+        rig = removeCard(rig,topCard);//remove cards we want to rig
+        rig = removeCard(rig,p1Card);
+        rig = removeCard(rig,p2Card);
+        rig = removeCard(rig,p3Card);
+        rig = removeCard(rig,p4Card);
+
+        ArrayList<Card> gameDeck = createCards(rig);
+        gd.setCards(gameDeck);//setCards with populated Deck
+        game.shuffleDeck(gd.getCards());//shuffle the deck, simulate more realism
+
+        gd.getCards().add(0, createCards(topCard).get(0));//add top card back
+
+        //add back player rigged cards in correct spots
+        ArrayList<Card> p1Cards = createCards(p1Card);
+        gd.getCards().add(1,p1Cards.get(0));
+
+        ArrayList<Card> p2Cards = createCards(p2Card);
+        gd.getCards().add(6,p2Cards.get(0));
+
+        ArrayList<Card> p3Cards = createCards(p3Card);
+        for (int i = 0; i < p3Cards.size(); i++) {//add all of player 3 cards
+            gd.getCards().add(11 + i,p3Cards.get(i));
+        }
+
+        ArrayList<Card> p4Cards = createCards(p4Card);
+        gd.getCards().add(16,p4Cards.get(0));
+
+        gd.setTopCard(game.startSetTopCard(gd.getCards()));//set the top card
+
+        for (Player p : gd.getPlayers()) {//deal all players cards
+            game.startDealCards(gd.getCards(), gd.getPlayers(), p.getID() - 1);
+        }
+
+    }
+    public void rigTestRow32(){
+        String topCard = "4C";
+        String p1Card = "5C";
+        String p2Card = "6C";
+        String p3Card = "7C";
+        String p4Card = "QC";
 
         String rig = "AH 2H 3H 4H 5H 6H 7H 8H 9H TH JH QH KH AS 2S 3S 4S 5S 6S 7S 8S 9S TS JS QS KS AC 2C 3C 4C 5C 6C 7C 8C 9C TC JC QC KC AD 2D 3D 4D 5D 6D 7D 8D 9D TD JD QD KD";//populated deck
         rig = removeCard(rig,topCard);//remove cards we want to rig
