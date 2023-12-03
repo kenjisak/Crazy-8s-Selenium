@@ -4,6 +4,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -652,6 +653,60 @@ public class AcceptanceTest {
         }
 
     }
+    @Test
+    @DirtiesContext
+    @DisplayName("Test Row 38: Playability of trying to play a non playable card")
+    //top card is KC and player1 tries to play 5S and interface prohibits this card being played (disabled or message)
+    public void testRow38() throws InterruptedException {
+        rigTestRow38();//rigs deck for this test
+
+        WebDriverWait wait = new WebDriverWait(allDrivers[0], Duration.ofSeconds(20));
+        wait.until(ExpectedConditions.elementToBeClickable (By.id("startBtn"))).click();//waits till start button pops up and starts the game with the rigged deck
+
+        verifyDeckCount();
+
+        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+
+        for (WebDriver playerBrowser : allDrivers) {//check all players windows they display the correct starting top card
+            String topCard = playerBrowser.findElement(By.className("topCard")).getAttribute("id");
+            assertEquals("KC",topCard);
+        }
+
+        allDrivers[0].findElement(By.id("5S")).click();//P1 tries to play 5S
+        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+
+        for (int i = 0; i < allDrivers.length; i++) {
+            WebDriverWait waitAlert = new WebDriverWait(allDrivers[i], Duration.ofSeconds(1));
+            Alert invalidCard = null;
+
+            if(i == 0) {//check if alert pops up only for player 1
+                try{
+                    invalidCard = waitAlert.until(ExpectedConditions.alertIsPresent());
+                }catch (Exception e){
+                    //timeout and no alert;
+                }
+                assertNotNull(invalidCard);
+                assertEquals("Invalid Selection",invalidCard.getText());
+
+                invalidCard.dismiss();
+            } else {
+                try{
+                    invalidCard = waitAlert.until(ExpectedConditions.alertIsPresent());
+                }catch (Exception e){
+                    //timeout and no alert;
+                }
+                assertNull(invalidCard);
+            }
+
+            String topCard = allDrivers[i].findElement(By.className("topCard")).getAttribute("id");
+            assertEquals("KC",topCard);//check all players windows they display the correct starting top card
+
+            String playerTurn = allDrivers[i].findElement(By.id("turnID")).getText();
+            assertEquals("Turn: 1",playerTurn);//check all players windows they display player 1 as still the same turn since invalid card was chosen
+
+        }
+
+    }
     ////////////////////////////////TEST RIG FUNCTIONS(NEXT TURN)////////////////////////////////
     public void rigTestRow25(){
         String topCard = "5C";
@@ -925,6 +980,33 @@ public class AcceptanceTest {
     public void rigTestRow37(){
         String topCard = "KC";
         String p1Card = "8H";
+
+        String rig = "AH 2H 3H 4H 5H 6H 7H 8H 9H TH JH QH KH AS 2S 3S 4S 5S 6S 7S 8S 9S TS JS QS KS AC 2C 3C 4C 5C 6C 7C 8C 9C TC JC QC KC AD 2D 3D 4D 5D 6D 7D 8D 9D TD JD QD KD";//populated deck
+        rig = removeCard(rig,topCard);//remove cards we want to rig
+        rig = removeCard(rig,p1Card);
+        assertTrue(!rig.contains(topCard) && !rig.contains(p1Card));
+
+        ArrayList<Card> gameDeck = createCards(rig);
+        gd.setCards(gameDeck);//setCards with populated Deck
+        game.shuffleDeck(gd.getCards());//shuffle the deck, simulate more realism
+
+        //add top card back
+        gd.getCards().add(0, createCards(topCard).get(0));
+
+        //add back player rigged cards in correct spots
+        ArrayList<Card> p1Cards = createCards(p1Card);
+        gd.getCards().add(1,p1Cards.get(0));
+
+        gd.setTopCard(game.startSetTopCard(gd.getCards()));//set the top card
+
+        for (Player p : gd.getPlayers()) {//deal all players cards
+            game.startDealCards(gd.getCards(), gd.getPlayers(), p.getID() - 1);
+        }
+
+    }
+    public void rigTestRow38(){
+        String topCard = "KC";
+        String p1Card = "5S";
 
         String rig = "AH 2H 3H 4H 5H 6H 7H 8H 9H TH JH QH KH AS 2S 3S 4S 5S 6S 7S 8S 9S TS JS QS KS AC 2C 3C 4C 5C 6C 7C 8C 9C TC JC QC KC AD 2D 3D 4D 5D 6D 7D 8D 9D TD JD QD KD";//populated deck
         rig = removeCard(rig,topCard);//remove cards we want to rig
