@@ -38,7 +38,7 @@ public class AcceptanceTest {
     @BeforeEach
     @DirtiesContext
     public void setupGameDrivers(){
-        SpringApplication.run(Application.class);
+//        SpringApplication.run(Application.class);
 
         System.setProperty("webdriver.chrome.driver",
                 ".\\chromedriver-win64\\chromedriver.exe");
@@ -75,14 +75,14 @@ public class AcceptanceTest {
     }
     @AfterEach
     @DirtiesContext
-    public void closeGameDrivers(){
+    public void closeGameDrivers() throws InterruptedException {
         for (WebDriver webDriver : allDrivers) {//close all drivers after
             webDriver.quit();
         }
     }
     @Test
     @DirtiesContext
-    public void testRow25() throws InterruptedException {
+    public void testRow25() throws InterruptedException {//p1 plays 3C: assert next player is player 2
         rigTestRow25();//rigs deck for this test
 
         WebDriverWait wait = new WebDriverWait(allDrivers[0], Duration.ofSeconds(20));
@@ -117,9 +117,47 @@ public class AcceptanceTest {
             }
         }
 
-
     }
-    ////////////////////////////////RIGGING FUNCTIONS////////////////////////////////
+    @Test
+    @DirtiesContext
+    //p1 plays 1H assert next player is player 4 AND interface must show now playing in opposite direction (i.e., going right)
+    //player 4 plays 7H and next player is player 3
+    public void testRow27() throws InterruptedException {
+        rigTestRow27();//rigs deck for this test
+
+        WebDriverWait wait = new WebDriverWait(allDrivers[0], Duration.ofSeconds(20));
+        wait.until(ExpectedConditions.elementToBeClickable (By.id("startBtn"))).click();//waits till start button pops up and starts the game with the rigged deck
+
+        verifyDeckCount();
+
+        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+
+        for (WebDriver playerBrowser : allDrivers) {//check all players windows they display the correct starting top card
+            String topCard = playerBrowser.findElement(By.className("topCard")).getAttribute("id");
+            assertEquals("5H",topCard);
+        }
+
+        allDrivers[0].findElement(By.id("AH")).click();//P1 plays 3C
+        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+
+        for (int i = 0; i < allDrivers.length; i++) {
+
+            String topCard = allDrivers[i].findElement(By.className("topCard")).getAttribute("id");
+            assertEquals("AH",topCard);//check all players windows they display the correct starting top card
+
+            String playerTurn = allDrivers[i].findElement(By.id("turnID")).getText();
+            assertEquals("Turn: 4",playerTurn);//check all players windows they display player 4 as current turn
+
+            WebElement drawBtn = allDrivers[i].findElement(By.id("draw"));
+            if (i == 3){
+                assertTrue(drawBtn.isEnabled());
+            }//assert only player 2 draw button is enabled
+            else{
+                assertFalse(drawBtn.isEnabled());
+            }
+        }
+    }
+    ////////////////////////////////TEST RIG FUNCTIONS////////////////////////////////
     public void rigTestRow25(){
         String topCard = "5C";
         String p1Card = "3C";
@@ -133,14 +171,12 @@ public class AcceptanceTest {
         gd.setCards(gameDeck);//setCards with populated Deck
         game.shuffleDeck(gd.getCards());//shuffle the deck, simulate more realism
 
-        //add back the rigged cards
-        ArrayList<Card> p1Cards = createCards(p1Card);
-        for (Card card :
-                p1Cards) {
-            gd.getCards().add(0,card);
-        }//set players hands, last player to first
+        //add top card back
+        gd.getCards().add(0, createCards(topCard).get(0));
 
-        gd.getCards().add(0, createCards(topCard).get(0));//add top card back always at the end
+        //add back player rigged cards in correct spots
+        ArrayList<Card> p1Cards = createCards(p1Card);
+        gd.getCards().add(1,p1Cards.get(0));
 
         gd.setTopCard(game.startSetTopCard(gd.getCards()));//set the top card
 
@@ -149,6 +185,43 @@ public class AcceptanceTest {
         }
 
     }
+
+    //p1 plays AH assert next player is player 4 AND interface must show now playing in opposite direction (i.e., going right)
+    //player 4 plays 7H and next player is player 3
+    public void rigTestRow27(){
+        String topCard = "5H";
+        String p1Card = "AH";
+        String p4Card = "7H";
+
+        String rig = "AH 2H 3H 4H 5H 6H 7H 8H 9H TH JH QH KH AS 2S 3S 4S 5S 6S 7S 8S 9S TS JS QS KS AC 2C 3C 4C 5C 6C 7C 8C 9C TC JC QC KC AD 2D 3D 4D 5D 6D 7D 8D 9D TD JD QD KD";//populated deck
+        rig = removeCard(rig,topCard);//remove cards we want to rig
+        rig = removeCard(rig,p1Card);
+        rig = removeCard(rig,p4Card);
+
+        System.out.println(rig);
+//        assertTrue(!rig.contains(topCard) && !rig.contains(p1Card));
+
+        ArrayList<Card> gameDeck = createCards(rig);
+        gd.setCards(gameDeck);//setCards with populated Deck
+        game.shuffleDeck(gd.getCards());//shuffle the deck, simulate more realism
+
+        gd.getCards().add(0, createCards(topCard).get(0));//add top card back
+
+        //add back player rigged cards in correct spots
+        ArrayList<Card> p1Cards = createCards(p1Card);
+        gd.getCards().add(1,p1Cards.get(0));
+
+        ArrayList<Card> p4Cards = createCards(p4Card);
+        gd.getCards().add(16,p4Cards.get(0));
+
+        gd.setTopCard(game.startSetTopCard(gd.getCards()));//set the top card
+
+        for (Player p : gd.getPlayers()) {//deal all players cards
+            game.startDealCards(gd.getCards(), gd.getPlayers(), p.getID() - 1);
+        }
+
+    }
+    ////////////////////////////////RIGGING HELPER FUNCTIONS////////////////////////////////
     public String removeCard(String gameDeck, String allCards){//
         String[] allGivenCards = allCards.split("\\s+");
         String updatedGD = "";
@@ -158,6 +231,11 @@ public class AcceptanceTest {
             updatedGD = gameDeck.replace(card, "");
         }
 
+        if(updatedGD.charAt(0) == ' '){//removes extra spacing if the card was the first or last card
+            updatedGD = updatedGD.substring(1);
+        } else if (updatedGD.charAt(updatedGD.length() - 1) == ' ') {
+            updatedGD = updatedGD.substring(0,updatedGD.length() - 2);
+        }
         return updatedGD;
     }
     public ArrayList<Card> createCards(String cards){
