@@ -723,10 +723,7 @@ public class AcceptanceTest {
 
         TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
 
-        for (WebDriver playerBrowser : allDrivers) {//check all players windows they display the correct starting top card
-            String topCard = playerBrowser.findElement(By.className("topCard")).getAttribute("id");
-            assertEquals("3D", topCard);
-        }
+        assertTopCard("3D");//check all players windows they display the correct top card for the start of the scenario
 
         int numLoopPlayed = 4;
         for (int i = 0; i < numLoopPlayed; i++) {//Set up of playing their cards until we get to 7C as top card
@@ -736,39 +733,15 @@ public class AcceptanceTest {
                 TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
             }
         }
-        for (int i = 0; i < allDrivers.length; i++) {//check all players windows they display the correct top card for the start of the scenario
-            String topCard = allDrivers[i].findElement(By.className("topCard")).getAttribute("id");
-            assertEquals("7C", topCard);
 
-            WebElement drawBtn = allDrivers[i].findElement(By.id("draw"));
-            if (i == 0) {
-                assertTrue(drawBtn.isEnabled());
-                drawBtn.click();
-                TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
-            }//assert only player 1 draw button is enabled
-            else {
-                assertFalse(drawBtn.isEnabled());
-            }
-        }
+        assertTopCard("7C");//check all players windows they display the correct top card for the start of the scenario
 
-        assertNotNull(allDrivers[0].findElement(By.id("hand")).findElement(By.id("6C")));//assert 6C is in P1's hand
-        assertFalse(allDrivers[0].findElement(By.id("draw")).isEnabled());//assert draw button is disabled since 6C is playable
-
-        List<WebElement> plyrHand = allDrivers[0].findElement(By.id("hand")).findElements(By.className("card"));
-        for (WebElement card : plyrHand) {
-            if (!Objects.equals(card.getAttribute("id"), "6C")) {
-                assertFalse(card.isEnabled());
-            } else {//check if only the playable card they drawed is clickable
-                assertTrue(card.isEnabled());
-            }
-        }
+        assertDrawnCard(0,"6C",true);//assert playable drawn card is in hand, the only one enabled, and draw button is disabled
 
         allDrivers[0].findElement(By.id("6C")).click();//P1 had to play 6C
         TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
-        for (int i = 0; i < allDrivers.length; i++) {
-            String topCard = allDrivers[i].findElement(By.className("topCard")).getAttribute("id");
-            assertEquals("6C", topCard);//check all players windows they display the correct starting top card
-        }
+
+        assertTopCard("6C");//check all players windows they display the correct top card after it was played
     }
     @Test
     @DirtiesContext
@@ -784,10 +757,7 @@ public class AcceptanceTest {
 
         TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
 
-        for (WebDriver playerBrowser : allDrivers) {//check all players windows they display the correct starting top card
-            String topCard = playerBrowser.findElement(By.className("topCard")).getAttribute("id");
-            assertEquals("3D", topCard);
-        }
+        assertTopCard("3D");//check all players windows they display the correct starting top card
 
         int numLoopPlayed = 4;
         for (int i = 0; i < numLoopPlayed; i++) {//Set up of playing their cards until we get to 7C as top card
@@ -797,56 +767,17 @@ public class AcceptanceTest {
                 TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
             }
         }
-        for (int i = 0; i < allDrivers.length; i++) {//check all players windows they display the correct top card for the start of the scenario
-            String topCard = allDrivers[i].findElement(By.className("topCard")).getAttribute("id");
-            assertEquals("7C", topCard);
-        }
 
-        for (int i = 0; i < allDrivers.length; i++) {//check all players windows if draw button is only enabled for P1 and the first drawed card is in their hand, but is not playable
-            WebElement drawBtn = allDrivers[i].findElement(By.id("draw"));
-            if (i == 0) {
-                assertTrue(drawBtn.isEnabled());
-                drawBtn.click();
-                assertNotNull(allDrivers[0].findElement(By.id("hand")).findElement(By.id("6D")));//assert 6D is in P1's hand
-                TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
-            }//assert only player 1 draw button is enabled and in hand
-            else {
-                assertFalse(drawBtn.isEnabled());
-            }
-        }
+        assertTopCard("7C");//check all players windows they display the correct top card for the start of the scenario
 
-        assertTrue(allDrivers[0].findElement(By.id("draw")).isEnabled());//assert draw button is enabled since still no playable cards in hand
+        assertDrawnCard(0,"6D",false);//assert non playable drawn card is in hand and draw button is still enabled
 
-        for (int i = 0; i < allDrivers.length; i++) {//check all players windows if draw button is still enabled for P1 and the second drawed card is in their hand
-            WebElement drawBtn = allDrivers[i].findElement(By.id("draw"));
-            if (i == 0) {
-                assertTrue(drawBtn.isEnabled());
-                drawBtn.click();
-                assertNotNull(allDrivers[0].findElement(By.id("hand")).findElement(By.id("5C")));//assert 5C is in P1's hand
-                TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
-            }//assert only player 1 draw button is enabled and in hand
-            else {
-                assertFalse(drawBtn.isEnabled());
-            }
-        }
-
-        assertFalse(allDrivers[0].findElement(By.id("draw")).isEnabled());//assert draw button is disabled since 6C is playable
-
-        List<WebElement> plyrHand = allDrivers[0].findElement(By.id("hand")).findElements(By.className("card"));
-        for (WebElement card : plyrHand) {
-            if (!Objects.equals(card.getAttribute("id"), "5C")) {
-                assertFalse(card.isEnabled());
-            } else {//check if only the playable card they drawed is clickable
-                assertTrue(card.isEnabled());
-            }
-        }
+        assertDrawnCard(0,"5C",true);//assert playable drawn card is in hand, the only one enabled, and draw button is disabled
 
         allDrivers[0].findElement(By.id("5C")).click();//P1 had to play 6C
         TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
-        for (int i = 0; i < allDrivers.length; i++) {
-            String topCard = allDrivers[i].findElement(By.className("topCard")).getAttribute("id");
-            assertEquals("5C", topCard);//check all players windows they display the correct starting top card
-        }
+
+        assertTopCard("5C");//check all players windows they display the correct top card after it was played
     }
     @Test
     @DirtiesContext
@@ -862,10 +793,7 @@ public class AcceptanceTest {
 
         TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
 
-        for (WebDriver playerBrowser : allDrivers) {//check all players windows they display the correct starting top card
-            String topCard = playerBrowser.findElement(By.className("topCard")).getAttribute("id");
-            assertEquals("3D", topCard);
-        }
+        assertTopCard("3D");//check all players windows they display the correct starting top card
 
         int numLoopPlayed = 4;
         for (int i = 0; i < numLoopPlayed; i++) {//Set up of playing their cards until we get to 7C as top card
@@ -875,71 +803,19 @@ public class AcceptanceTest {
                 TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
             }
         }
-        for (int i = 0; i < allDrivers.length; i++) {//check all players windows they display the correct top card for the start of the scenario
-            String topCard = allDrivers[i].findElement(By.className("topCard")).getAttribute("id");
-            assertEquals("7C", topCard);
-        }
 
-        for (int i = 0; i < allDrivers.length; i++) {//check all players windows if draw button is only enabled for P1 and the first drawed card is in their hand, but is not playable
-            WebElement drawBtn = allDrivers[i].findElement(By.id("draw"));
-            if (i == 0) {
-                assertTrue(drawBtn.isEnabled());
-                drawBtn.click();
-                assertNotNull(allDrivers[0].findElement(By.id("hand")).findElement(By.id("6D")));//assert 6D is in P1's hand
-                TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
-            }//assert only player 1 draw button is enabled and in hand
-            else {
-                assertFalse(drawBtn.isEnabled());
-            }
-        }
+        assertTopCard("7C");//check all players windows they display the correct top card for the start of the scenario
 
-        assertTrue(allDrivers[0].findElement(By.id("draw")).isEnabled());//assert draw button is disabled since still no playable cards in hand
+        assertDrawnCard(0,"6D",false);//assert non playable drawn card is in hand and draw button is still enabled
 
-        for (int i = 0; i < allDrivers.length; i++) {//check all players windows if draw button is only enabled for P1 and the second drawed card is in their hand, but is not playable
-            WebElement drawBtn = allDrivers[i].findElement(By.id("draw"));
-            if (i == 0) {
-                assertTrue(drawBtn.isEnabled());
-                drawBtn.click();
-                assertNotNull(allDrivers[0].findElement(By.id("hand")).findElement(By.id("5S")));//assert 5S is in P1's hand
-                TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
-            }//assert only player 1 draw button is enabled and in hand
-            else {
-                assertFalse(drawBtn.isEnabled());
-            }
-        }
+        assertDrawnCard(0,"5S",false);//assert non playable drawn card is in hand and draw button is still enabled
 
-        assertTrue(allDrivers[0].findElement(By.id("draw")).isEnabled());//assert draw button is enabled since still no playable cards in hand
-
-        for (int i = 0; i < allDrivers.length; i++) {//check all players windows if draw button is still enabled for P1 and the third drawed card is in their hand
-            WebElement drawBtn = allDrivers[i].findElement(By.id("draw"));
-            if (i == 0) {
-                assertTrue(drawBtn.isEnabled());
-                drawBtn.click();
-                assertNotNull(allDrivers[0].findElement(By.id("hand")).findElement(By.id("7H")));//assert 5C is in P1's hand
-                TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
-            }//assert only player 1 draw button is enabled and in hand
-            else {
-                assertFalse(drawBtn.isEnabled());
-            }
-        }
-
-        assertFalse(allDrivers[0].findElement(By.id("draw")).isEnabled());//assert draw button is disabled since 7H is playable
-
-        List<WebElement> plyrHand = allDrivers[0].findElement(By.id("hand")).findElements(By.className("card"));
-        for (WebElement card : plyrHand) {
-            if (!Objects.equals(card.getAttribute("id"), "7H")) {
-                assertFalse(card.isEnabled());
-            } else {//check if only the playable card they drawed is clickable
-                assertTrue(card.isEnabled());
-            }
-        }
+        assertDrawnCard(0,"7H",true);//assert playable drawn card is in hand, the only one enabled, and draw button is disabled
 
         allDrivers[0].findElement(By.id("7H")).click();//P1 had to play 7H
         TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
-        for (int i = 0; i < allDrivers.length; i++) {
-            String topCard = allDrivers[i].findElement(By.className("topCard")).getAttribute("id");
-            assertEquals("7H", topCard);//check all players windows they display the correct starting top card
-        }
+
+        assertTopCard("7H");//check all players windows they display the correct top card after it was played
     }
     ////////////////////////////////TEST RIG FUNCTIONS(NEXT TURN)////////////////////////////////
     public void rigTestRow25(){
@@ -1397,6 +1273,43 @@ public class AcceptanceTest {
 
         for (Player p : gd.getPlayers()) {//deal all players cards
             game.startDealCards(gd.getCards(), gd.getPlayers(), p.getID() - 1);
+        }
+    }
+    ///////////////////////////////////////ASSERTS////////////////////
+    public void assertDrawnCard(int plyrIndex, String card, Boolean playable) throws InterruptedException {
+        for (int i = 0; i < allDrivers.length; i++) {//check all players windows if draw button is only enabled for that player and the drawed card is in their hand, but is not playable
+            WebElement drawBtn = allDrivers[i].findElement(By.id("draw"));
+            if (i == plyrIndex) {
+                assertTrue(drawBtn.isEnabled());
+                drawBtn.click();
+                assertNotNull(allDrivers[plyrIndex].findElement(By.id("hand")).findElement(By.id(card)));//assert the card is in player's hand
+                TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+            }//assert only that player's draw button is enabled and in hand
+            else {
+                assertFalse(drawBtn.isEnabled());
+            }
+        }
+
+        if(playable){
+            assertFalse(allDrivers[plyrIndex].findElement(By.id("draw")).isEnabled());//assert draw button is disabled since card is playable
+
+            List<WebElement> plyrHand = allDrivers[0].findElement(By.id("hand")).findElements(By.className("card"));
+            for (WebElement plyrCard : plyrHand) {
+                if (!Objects.equals(plyrCard.getAttribute("id"), card)) {
+                    assertFalse(plyrCard.isEnabled());
+                } else {//check if only the playable card they drawed is clickable
+                    assertTrue(plyrCard.isEnabled());
+                }
+            }
+        }else{
+            assertTrue(allDrivers[plyrIndex].findElement(By.id("draw")).isEnabled());//assert draw button is enabled since still no playable cards in hand
+        }
+
+    }
+    public void assertTopCard(String correctTopCard){
+        for (WebDriver playerBrowser : allDrivers) {//check all players windows they display the correct starting top card
+            String topCard = playerBrowser.findElement(By.className("topCard")).getAttribute("id");
+            assertEquals(correctTopCard, topCard);
         }
     }
 }
