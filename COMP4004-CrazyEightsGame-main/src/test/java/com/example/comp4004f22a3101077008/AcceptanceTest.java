@@ -729,7 +729,7 @@ public class AcceptanceTest {
         }
 
         int numLoopPlayed = 4;
-        for (int i = 0; i < numLoopPlayed; i++) {
+        for (int i = 0; i < numLoopPlayed; i++) {//Set up of playing their cards until we get to 7C as top card
             for (WebDriver currPlayer : allDrivers) {
                 List<WebElement> plyrHand = currPlayer.findElement(By.id("hand")).findElements(By.className("card"));
                 plyrHand.get(0).click();
@@ -772,7 +772,7 @@ public class AcceptanceTest {
     }
     @Test
     @DirtiesContext
-    @DisplayName("Test Row 43: Drawing Rules, draws 2 cards and has to play it.")
+    @DisplayName("Test Row 43: Drawing Rules, draws 2 cards and has to play it")
     //top card is 7C and p1 has {3H} as hand: must draw, draws 6D then 5C and must play it
     public void testRow43() throws InterruptedException {
         rigTestRow43();//rigs deck for this test
@@ -790,7 +790,7 @@ public class AcceptanceTest {
         }
 
         int numLoopPlayed = 4;
-        for (int i = 0; i < numLoopPlayed; i++) {
+        for (int i = 0; i < numLoopPlayed; i++) {//Set up of playing their cards until we get to 7C as top card
             for (WebDriver currPlayer : allDrivers) {
                 List<WebElement> plyrHand = currPlayer.findElement(By.id("hand")).findElements(By.className("card"));
                 plyrHand.get(0).click();
@@ -814,8 +814,8 @@ public class AcceptanceTest {
                 assertFalse(drawBtn.isEnabled());
             }
         }
-        
-        assertTrue(allDrivers[0].findElement(By.id("draw")).isEnabled());//assert draw button is disabled since still no playabl cards in hand
+
+        assertTrue(allDrivers[0].findElement(By.id("draw")).isEnabled());//assert draw button is enabled since still no playable cards in hand
 
         for (int i = 0; i < allDrivers.length; i++) {//check all players windows if draw button is still enabled for P1 and the second drawed card is in their hand
             WebElement drawBtn = allDrivers[i].findElement(By.id("draw"));
@@ -846,6 +846,99 @@ public class AcceptanceTest {
         for (int i = 0; i < allDrivers.length; i++) {
             String topCard = allDrivers[i].findElement(By.className("topCard")).getAttribute("id");
             assertEquals("5C", topCard);//check all players windows they display the correct starting top card
+        }
+    }
+    @Test
+    @DirtiesContext
+    @DisplayName("Test Row 44: Drawing Rules, draws 3 cards and thas to play it")
+    //top card is 7C and p1 has {3H} as hand: must draw, draws 6D, 5S then 7H and must play it
+    public void testRow44() throws InterruptedException {
+        rigTestRow44();//rigs deck for this test
+
+        WebDriverWait wait = new WebDriverWait(allDrivers[0], Duration.ofSeconds(20));
+        wait.until(ExpectedConditions.elementToBeClickable(By.id("startBtn"))).click();//waits till start button pops up and starts the game with the rigged deck
+
+        verifyDeckCount();
+
+        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+
+        for (WebDriver playerBrowser : allDrivers) {//check all players windows they display the correct starting top card
+            String topCard = playerBrowser.findElement(By.className("topCard")).getAttribute("id");
+            assertEquals("3D", topCard);
+        }
+
+        int numLoopPlayed = 4;
+        for (int i = 0; i < numLoopPlayed; i++) {//Set up of playing their cards until we get to 7C as top card
+            for (WebDriver currPlayer : allDrivers) {
+                List<WebElement> plyrHand = currPlayer.findElement(By.id("hand")).findElements(By.className("card"));
+                plyrHand.get(0).click();
+                TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+            }
+        }
+        for (int i = 0; i < allDrivers.length; i++) {//check all players windows they display the correct top card for the start of the scenario
+            String topCard = allDrivers[i].findElement(By.className("topCard")).getAttribute("id");
+            assertEquals("7C", topCard);
+        }
+
+        for (int i = 0; i < allDrivers.length; i++) {//check all players windows if draw button is only enabled for P1 and the first drawed card is in their hand, but is not playable
+            WebElement drawBtn = allDrivers[i].findElement(By.id("draw"));
+            if (i == 0) {
+                assertTrue(drawBtn.isEnabled());
+                drawBtn.click();
+                assertNotNull(allDrivers[0].findElement(By.id("hand")).findElement(By.id("6D")));//assert 6D is in P1's hand
+                TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+            }//assert only player 1 draw button is enabled and in hand
+            else {
+                assertFalse(drawBtn.isEnabled());
+            }
+        }
+
+        assertTrue(allDrivers[0].findElement(By.id("draw")).isEnabled());//assert draw button is disabled since still no playable cards in hand
+
+        for (int i = 0; i < allDrivers.length; i++) {//check all players windows if draw button is only enabled for P1 and the second drawed card is in their hand, but is not playable
+            WebElement drawBtn = allDrivers[i].findElement(By.id("draw"));
+            if (i == 0) {
+                assertTrue(drawBtn.isEnabled());
+                drawBtn.click();
+                assertNotNull(allDrivers[0].findElement(By.id("hand")).findElement(By.id("5S")));//assert 5S is in P1's hand
+                TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+            }//assert only player 1 draw button is enabled and in hand
+            else {
+                assertFalse(drawBtn.isEnabled());
+            }
+        }
+
+        assertTrue(allDrivers[0].findElement(By.id("draw")).isEnabled());//assert draw button is enabled since still no playable cards in hand
+
+        for (int i = 0; i < allDrivers.length; i++) {//check all players windows if draw button is still enabled for P1 and the third drawed card is in their hand
+            WebElement drawBtn = allDrivers[i].findElement(By.id("draw"));
+            if (i == 0) {
+                assertTrue(drawBtn.isEnabled());
+                drawBtn.click();
+                assertNotNull(allDrivers[0].findElement(By.id("hand")).findElement(By.id("7H")));//assert 5C is in P1's hand
+                TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+            }//assert only player 1 draw button is enabled and in hand
+            else {
+                assertFalse(drawBtn.isEnabled());
+            }
+        }
+
+        assertFalse(allDrivers[0].findElement(By.id("draw")).isEnabled());//assert draw button is disabled since 7H is playable
+
+        List<WebElement> plyrHand = allDrivers[0].findElement(By.id("hand")).findElements(By.className("card"));
+        for (WebElement card : plyrHand) {
+            if (!Objects.equals(card.getAttribute("id"), "7H")) {
+                assertFalse(card.isEnabled());
+            } else {//check if only the playable card they drawed is clickable
+                assertTrue(card.isEnabled());
+            }
+        }
+
+        allDrivers[0].findElement(By.id("7H")).click();//P1 had to play 7H
+        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+        for (int i = 0; i < allDrivers.length; i++) {
+            String topCard = allDrivers[i].findElement(By.className("topCard")).getAttribute("id");
+            assertEquals("7H", topCard);//check all players windows they display the correct starting top card
         }
     }
     ////////////////////////////////TEST RIG FUNCTIONS(NEXT TURN)////////////////////////////////
@@ -1190,6 +1283,16 @@ public class AcceptanceTest {
         String p3Card = "7D 6H 7S 3C";
         String p4Card = "9D 5H 9S 7C";
         String drawCard = "6D 5C";
+
+        rigAllPlayers(topCard,p1Card,p2Card,p3Card,p4Card,drawCard);
+    }
+    public void rigTestRow44(){
+        String topCard = "3D";
+        String p1Card = "4D 9H 4S 9C 3H";
+        String p2Card = "5D 6H 6S 6C";
+        String p3Card = "7D 5H 7S 5C";
+        String p4Card = "9D 4H 9S 7C";
+        String drawCard = "6D 5S 7H";
 
         rigAllPlayers(topCard,p1Card,p2Card,p3Card,p4Card,drawCard);
     }
