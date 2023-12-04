@@ -932,6 +932,59 @@ public class AcceptanceTest {
 
         assertTopCard("6C");//check all players windows they display the correct top card after it was played
     }
+    @Test
+    @DirtiesContext
+    @DisplayName("Test Row 51: Playing Twos, draws 2 cards and is able to play the first one")
+    //p1 plays 2C, p2 has only {4H} thus must draw 2 cards {6C and 9D} then plays 6C
+    public void testRow51() throws InterruptedException {
+        rigTestRow51();//rigs deck for this test
+
+        WebDriverWait wait = new WebDriverWait(allDrivers[0], Duration.ofSeconds(20));
+        wait.until(ExpectedConditions.elementToBeClickable(By.id("startBtn"))).click();//waits till start button pops up and starts the game with the rigged deck
+
+        verifyDeckCount();
+
+        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+
+        assertTopCard("3D");//check all players windows they display the correct top card for the start of the scenario
+
+        int numLoopPlayed = 3;
+        for (int i = 0; i < numLoopPlayed; i++) {//Set up of playing their cards until we get to 7C as top card
+            for (WebDriver currPlayer : allDrivers) {
+                List<WebElement> plyrHand = currPlayer.findElement(By.id("hand")).findElements(By.className("card"));
+                String plyrCardPlayed = plyrHand.get(0).getAttribute("id");
+                plyrHand.get(0).click();
+                assertTopCard(plyrCardPlayed);//asserts each card played is the new top card
+                TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+            }
+        }
+
+        allDrivers[1].findElement(By.id("5S")).click();//P2 Plays 5S since P1 was skipped
+        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+        assertTopCard("5S");//check all players windows they display the correct top card for the start of the scenario
+
+        allDrivers[2].findElement(By.id("9S")).click();//P3 Plays 9S
+        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+        assertTopCard("9S");//check all players windows they display the correct top card for the start of the scenario
+
+        allDrivers[3].findElement(By.id("9C")).click();//P4 Plays 9C
+        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+        assertTopCard("9C");//check all players windows they display the correct top card for the start of the scenario
+
+        allDrivers[0].findElement(By.id("2C")).click();//P1 Plays 2C so itll be the topCard after P4 played
+        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+        assertTopCard("2C");//check all players windows they display the correct top card for the start of the scenario
+
+        //2C was played so assert P2 received the correct cards
+        assertOnlyDrawn(1,"6C");//P2 draw card and assert drawn card is in hand
+        assertOnlyDrawn(1,"9D");//P2 draw card and assert drawn card is in hand
+        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+
+        allDrivers[1].findElement(By.id("6C")).click();//P2 plays 6C
+        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+
+        assertTopCard("6C");//check all players windows they display the correct top card after it was played
+    }
     ////////////////////////////////TEST RIG FUNCTIONS(NEXT TURN)////////////////////////////////
     public void rigTestRow25(){
         String topCard = "5C";
@@ -1317,6 +1370,17 @@ public class AcceptanceTest {
 
         rigAllPlayers(topCard,p1Card,p2Card,p3Card,p4Card,drawCard);
     }
+    ////////////////////////////////////////////
+    public void rigTestRow51(){
+        String topCard = "3D";
+        String p1Card = "4D 7H TS 2C";
+        String p2Card = "5D 6H 6S 5S 4H";
+        String p3Card = "6D 5H 7S 9S";
+        String p4Card = "7D TH QS 9C";
+        String drawCard = "6C 9D";
+
+        rigAllPlayers(topCard,p1Card,p2Card,p3Card,p4Card,drawCard);
+    }
     ////////////////////////////////RIGGING HELPER FUNCTIONS////////////////////////////////
     public String removeCard(String gameDeck, String allCards){//
         String[] allGivenCards = allCards.split("\\s+");
@@ -1487,5 +1551,8 @@ public class AcceptanceTest {
                 assertFalse(suitBtns.findElement(By.id("diamond")).isDisplayed());
             }
         }
+    }
+    public void assertOnlyDrawn(int plyrIndex, String card) throws InterruptedException {
+        assertNotNull(allDrivers[plyrIndex].findElement(By.id("hand")).findElement(By.id(card)));//assert the card is in player's hand
     }
 }
