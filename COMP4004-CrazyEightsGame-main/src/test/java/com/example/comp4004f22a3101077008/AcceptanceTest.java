@@ -21,6 +21,8 @@ import org.springframework.test.context.ContextConfiguration;
 
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -707,6 +709,67 @@ public class AcceptanceTest {
         }
 
     }
+    @Test
+    @DirtiesContext
+    @DisplayName("Test Row 42: Drawing Rules, draws 1 card and has to play it.")
+    //top card is 7C and p1 has only {3H} as hand: must draw, draws 6C and must play it
+    public void testRow42() throws InterruptedException {
+        rigTestRow42();//rigs deck for this test
+
+        WebDriverWait wait = new WebDriverWait(allDrivers[0], Duration.ofSeconds(20));
+        wait.until(ExpectedConditions.elementToBeClickable(By.id("startBtn"))).click();//waits till start button pops up and starts the game with the rigged deck
+
+        verifyDeckCount();
+
+        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+
+        for (WebDriver playerBrowser : allDrivers) {//check all players windows they display the correct starting top card
+            String topCard = playerBrowser.findElement(By.className("topCard")).getAttribute("id");
+            assertEquals("3D", topCard);
+        }
+
+        int numLoopPlayed = 4;
+        for (int i = 0; i < numLoopPlayed; i++) {
+            for (WebDriver currPlayer : allDrivers) {
+                List<WebElement> plyrHand = currPlayer.findElement(By.id("hand")).findElements(By.className("card"));
+                plyrHand.get(0).click();
+                TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+            }
+        }
+        for (int i = 0; i < allDrivers.length; i++) {//check all players windows they display the correct top card for the start of the scenario
+            String topCard = allDrivers[i].findElement(By.className("topCard")).getAttribute("id");
+            assertEquals("7C", topCard);
+
+            WebElement drawBtn = allDrivers[i].findElement(By.id("draw"));
+            if (i == 0) {
+                assertTrue(drawBtn.isEnabled());
+                drawBtn.click();
+                TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+            }//assert only player 1 draw button is enabled
+            else {
+                assertFalse(drawBtn.isEnabled());
+            }
+        }
+
+        assertNotNull(allDrivers[0].findElement(By.id("hand")).findElement(By.id("6C")));//assert 6C is in P1's hand
+        assertFalse(allDrivers[0].findElement(By.id("draw")).isEnabled());//assert draw button is disabled since 6C is playable
+
+        List<WebElement> plyrHand = allDrivers[0].findElement(By.id("hand")).findElements(By.className("card"));
+        for (WebElement card : plyrHand) {
+            if (!Objects.equals(card.getAttribute("id"), "6C")) {
+                assertFalse(card.isEnabled());
+            } else {//check if only the playable card they drawed is clickable
+                assertTrue(card.isEnabled());
+            }
+        }
+
+        allDrivers[0].findElement(By.id("6C")).click();//P1 had to play 6C
+        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+        for (int i = 0; i < allDrivers.length; i++) {
+            String topCard = allDrivers[i].findElement(By.className("topCard")).getAttribute("id");
+            assertEquals("6C", topCard);//check all players windows they display the correct starting top card
+        }
+    }
     ////////////////////////////////TEST RIG FUNCTIONS(NEXT TURN)////////////////////////////////
     public void rigTestRow25(){
         String topCard = "5C";
@@ -1031,6 +1094,17 @@ public class AcceptanceTest {
         }
 
     }
+    ///////////////////////////////////////////
+    public void rigTestRow42(){
+        String topCard = "3D";
+        String p1Card = "5D 9H 5S 9C 3H";
+        String p2Card = "6D 7H 6S 5C";
+        String p3Card = "7D 6H 7S 3C";
+        String p4Card = "9D 5H 9S 7C";
+        String drawCard = "6C";
+
+        rigAllPlayers(topCard,p1Card,p2Card,p3Card,p4Card,drawCard);
+    }
     ////////////////////////////////RIGGING HELPER FUNCTIONS////////////////////////////////
     public String removeCard(String gameDeck, String allCards){//
         String[] allGivenCards = allCards.split("\\s+");
@@ -1069,5 +1143,69 @@ public class AcceptanceTest {
             assertEquals(5,p.handSize());
         }
         assertEquals(52,gameDeckCount);
+
+    }
+    public void rigAllPlayers(String topCard, String p1Card, String p2Card, String p3Card, String p4Card, String drawCard){
+
+        String rig = "AH 2H 3H 4H 5H 6H 7H 8H 9H TH JH QH KH AS 2S 3S 4S 5S 6S 7S 8S 9S TS JS QS KS AC 2C 3C 4C 5C 6C 7C 8C 9C TC JC QC KC AD 2D 3D 4D 5D 6D 7D 8D 9D TD JD QD KD";//populated deck
+        //remove cards we want to rig
+        rig = removeCard(rig,topCard);
+        rig = removeCard(rig,p1Card);
+        rig = removeCard(rig,p2Card);
+        rig = removeCard(rig,p3Card);
+        rig = removeCard(rig,p4Card);
+        if(!drawCard.isEmpty()){
+            rig = removeCard(rig,drawCard);
+        }
+
+        ArrayList<Card> gameDeck = createCards(rig);
+        int cardSize = 1 + 5 + 4 + 4 + 4 + 1;
+        assertEquals(52 - cardSize, gameDeck.size());
+
+        gd.setCards(gameDeck);//setCards with populated Deck
+        game.shuffleDeck(gd.getCards());//shuffle the deck, simulate more realism
+
+        gd.getCards().add(0, createCards(topCard).get(0));//add top card back
+        assertEquals(52 - cardSize + 1, gd.getCards().size());
+
+        //add back player rigged cards in correct spots
+        ArrayList<Card> p1Cards = createCards(p1Card);
+        for (int i = 0; i < p1Cards.size(); i++) {//add all of player 1 cards
+            gd.getCards().add(1 + i,p1Cards.get(i));
+        }
+        assertEquals(52 - cardSize + 1 + p1Cards.size(), gd.getCards().size());
+
+        ArrayList<Card> p2Cards = createCards(p2Card);
+        for (int i = 0; i < p2Cards.size(); i++) {//add all of player 2 cards
+            gd.getCards().add(6 + i,p2Cards.get(i));
+        }
+        assertEquals(52 - cardSize + 1 + p1Cards.size() + p2Cards.size(), gd.getCards().size());
+
+        ArrayList<Card> p3Cards = createCards(p3Card);
+        for (int i = 0; i < p3Cards.size(); i++) {//add all of player 3 cards
+            gd.getCards().add(11 + i,p3Cards.get(i));
+        }
+        assertEquals(52 - cardSize + 1 + p1Cards.size() + p2Cards.size() + p3Cards.size(), gd.getCards().size());
+
+        ArrayList<Card> p4Cards = createCards(p4Card);
+        for (int i = 0; i < p4Cards.size(); i++) {//add all of player 4 cards
+            gd.getCards().add(16 + i,p4Cards.get(i));
+        }
+        assertEquals(52 - cardSize + 1 + p1Cards.size() + p2Cards.size() + p3Cards.size() + p4Cards.size(), gd.getCards().size());
+
+        if(!drawCard.isEmpty()){
+            ArrayList<Card> drawCards = createCards(drawCard);
+            for (int i = 0; i < drawCards.size(); i++) {//add all of drawCards
+                gd.getCards().add( 21 + i,drawCards.get(i));
+            }
+            assertEquals(52 - cardSize + 1 + p1Cards.size() + p2Cards.size() + p3Cards.size() + p4Cards.size() + drawCards.size(), gd.getCards().size());
+        }
+
+
+        gd.setTopCard(game.startSetTopCard(gd.getCards()));//set the top card
+
+        for (Player p : gd.getPlayers()) {//deal all players cards
+            game.startDealCards(gd.getCards(), gd.getPlayers(), p.getID() - 1);
+        }
     }
 }
