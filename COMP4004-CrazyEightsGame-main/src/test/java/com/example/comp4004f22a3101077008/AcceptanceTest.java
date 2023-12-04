@@ -1058,6 +1058,67 @@ public class AcceptanceTest {
         TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
         assertTopCard("6C");//check all players windows they display the correct top card after it was played
     }
+    @Test
+    @DirtiesContext
+    @DisplayName("Test Row 53: Playing Twos, immediately draws 2 cards and has to draw 3 more and ends turn")
+    //p1 plays 2C, p2 has only {4H} draws {6S and 9D} then draws 9H, 7S, 5H and then  turns end (without playing a card)
+    public void testRow53() throws InterruptedException {
+        rigTestRow53();//rigs deck for this test
+
+        WebDriverWait wait = new WebDriverWait(allDrivers[0], Duration.ofSeconds(20));
+        wait.until(ExpectedConditions.elementToBeClickable(By.id("startBtn"))).click();//waits till start button pops up and starts the game with the rigged deck
+
+        verifyDeckCount();
+
+        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+
+        assertTopCard("3D");//check all players windows they display the correct top card for the start of the scenario
+
+        int numLoopPlayed = 3;
+        for (int i = 0; i < numLoopPlayed; i++) {//Set up of playing their cards until we get to 7C as top card
+            for (WebDriver currPlayer : allDrivers) {
+                List<WebElement> plyrHand = currPlayer.findElement(By.id("hand")).findElements(By.className("card"));
+                String plyrCardPlayed = plyrHand.get(0).getAttribute("id");
+                plyrHand.get(0).click();
+                assertTopCard(plyrCardPlayed);//asserts each card played is the new top card
+                TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+            }
+        }
+
+        allDrivers[1].findElement(By.id("5S")).click();//P2 Plays 5S since P1 was skipped
+        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+        assertTopCard("5S");//check all players windows they display the correct top card for the start of the scenario
+
+        allDrivers[2].findElement(By.id("9S")).click();//P3 Plays 9S
+        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+        assertTopCard("9S");//check all players windows they display the correct top card for the start of the scenario
+
+        allDrivers[3].findElement(By.id("9C")).click();//P4 Plays 9C
+        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+        assertTopCard("9C");//check all players windows they display the correct top card for the start of the scenario
+
+        allDrivers[0].findElement(By.id("2C")).click();//P1 Plays 2C so itll be the topCard after P4 played
+        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+        assertTopCard("2C");//check all players windows they display the correct top card for the start of the scenario
+        String savedTopCard = allDrivers[0].findElement(By.className("topCard")).getAttribute("id");
+
+        //2C was played so assert P2 received the correct cards
+        assertOnlyDrawn(1,"6S");//P2 assert drawn card is in hand
+        assertOnlyDrawn(1,"9D");//P2 assert drawn card is in hand
+
+
+        assertDrawnCard(1,"9H",false);//P2 draw card and assert drawn card is in hand
+        assertDrawnCard(1,"7S",false);//P2 draw card and assert drawn card is in hand
+
+        assertTurn("2");//used the manual code since we drawbtn will be disabled since end of turn, instead of enabled since its still a non playable card
+        allDrivers[1].findElement(By.id("draw")).click();
+        assertNotNull(allDrivers[1].findElement(By.id("hand")).findElement(By.id("5H")));//assert the card is in player 2's hand
+        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+
+        assertTurn("3");//assert current turn is the next player since P2 couldn't play a card
+        assertTopCard("2C");//check all players windows the top card is the same
+        assertEquals(savedTopCard,allDrivers[1].findElement(By.className("topCard")).getAttribute("id"));//check the top card is still set to 2C
+    }
     ////////////////////////////////TEST RIG FUNCTIONS(NEXT TURN)////////////////////////////////
     public void rigTestRow25(){
         String topCard = "5C";
@@ -1461,6 +1522,16 @@ public class AcceptanceTest {
         String p3Card = "6D 5H 7S 9S";
         String p4Card = "7D TH QS 9C";
         String drawCard = "6S 9D 9H 6C";
+
+        rigAllPlayers(topCard,p1Card,p2Card,p3Card,p4Card,drawCard);
+    }
+    public void rigTestRow53(){
+        String topCard = "3D";
+        String p1Card = "4D 7H TS 2C";
+        String p2Card = "5D 6H 3S 5S 4H";
+        String p3Card = "6D 3H 4S 9S";
+        String p4Card = "7D TH QS 9C";
+        String drawCard = "6S 9D 9H 7S 5H";
 
         rigAllPlayers(topCard,p1Card,p2Card,p3Card,p4Card,drawCard);
     }
