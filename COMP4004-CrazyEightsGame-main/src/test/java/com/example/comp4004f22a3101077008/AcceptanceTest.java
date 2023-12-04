@@ -1183,6 +1183,60 @@ public class AcceptanceTest {
         TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
         assertTopCard("6H");//check all players windows they display the correct top card after it was played
     }
+    @Test
+    @DirtiesContext
+    @DisplayName("Test Row 56: Playing Twos, but is able to play 2 cards immediately")
+    //p1 plays 2C, p2 has {4C, 6C, 9D} then p2 plays 4C and 6C (ie 2 legal cards) and ends their turn
+    public void testRow56() throws InterruptedException {
+        rigTestRow56();//rigs deck for this test
+
+        WebDriverWait wait = new WebDriverWait(allDrivers[0], Duration.ofSeconds(20));
+        wait.until(ExpectedConditions.elementToBeClickable(By.id("startBtn"))).click();//waits till start button pops up and starts the game with the rigged deck
+
+        verifyDeckCount();
+
+        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+
+        assertTopCard("3D");//check all players windows they display the correct top card for the start of the scenario
+
+        int numLoopPlayed = 1;
+        for (int i = 0; i < numLoopPlayed; i++) {//Set up of playing their cards until we get to 7C as top card
+            for (WebDriver currPlayer : allDrivers) {
+                List<WebElement> plyrHand = currPlayer.findElement(By.id("hand")).findElements(By.className("card"));
+                String plyrCardPlayed = plyrHand.get(0).getAttribute("id");
+                plyrHand.get(0).click();
+                assertTopCard(plyrCardPlayed);//asserts each card played is the new top card
+                TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+            }
+        }
+
+        allDrivers[0].findElement(By.id("7C")).click();//P1 Plays 7C
+        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+        assertTopCard("7C");//check all players windows they display the correct top card for the start of the scenario
+
+        allDrivers[1].findElement(By.id("5C")).click();//P2 Plays 5C
+        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+        assertTopCard("5C");//check all players windows they display the correct top card for the start of the scenario
+
+        allDrivers[2].findElement(By.id("QC")).click();//P3 Plays QC
+        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+        assertTopCard("QC");//check all players windows they display the correct top card for the start of the scenario
+
+        allDrivers[0].findElement(By.id("2C")).click();//P1 Plays 2C so itll be the topCard since P4 is skipped
+        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+        assertTopCard("2C");//check all players windows they display the correct top card for the start of the scenario
+
+        /////////////////////////////////P2 Plays 2 cards consecutively///////////////////////////
+        allDrivers[1].findElement(By.id("4C")).click();//P2 Plays 4C
+        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+        assertTopCard("4C");//check all players windows they display the correct top card for the start of the scenario
+
+        allDrivers[1].findElement(By.id("6C")).click();//P2 Plays 6C
+        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+        assertTopCard("6C");//check all players windows they display the correct top card for the start of the scenario
+
+        assertTurn("3");//assert the next correct player is displayed
+    }
     ////////////////////////////////TEST RIG FUNCTIONS(NEXT TURN)////////////////////////////////
     public void rigTestRow25(){
         String topCard = "5C";
@@ -1606,6 +1660,16 @@ public class AcceptanceTest {
         String p3Card = "TD 3H 4S 9S 7D";//5
         String p4Card = "KD TH QS 9C";//4
         String drawCard = "2H 9D 5S 6D 6H 7C";//6
+
+        rigAllPlayers(topCard,p1Card,p2Card,p3Card,p4Card,drawCard);
+    }
+    public void rigTestRow56(){
+        String topCard = "3D";
+        String p1Card = "4D 7C 2C";
+        String p2Card = "5D 5C 4C 6C 9D";
+        String p3Card = "6D QC";
+        String p4Card = "7D";
+        String drawCard = "";
 
         rigAllPlayers(topCard,p1Card,p2Card,p3Card,p4Card,drawCard);
     }
