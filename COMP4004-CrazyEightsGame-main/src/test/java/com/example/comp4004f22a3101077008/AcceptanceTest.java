@@ -22,6 +22,7 @@ import org.springframework.test.context.ContextConfiguration;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
@@ -1371,37 +1372,44 @@ public class AcceptanceTest {
         TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
         assertTopCard("2C");//check all players windows they display the correct top card for the start of the scenario
 
-        /////////////////////////////////P2 Plays 2 cards consecutively///////////////////////////
+        /////////////////////////////////P2 Plays 2 cards consecutively and ends the game///////////////////////////
         allDrivers[1].findElement(By.id("5C")).click();//P2 Plays 5C
         TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
         assertTopCard("5C");//check all players windows they display the correct top card for the start of the scenario
+
+        //can only assert ending hands before the last card is played here. Since hands are not displayed anymore after that.
+        assertEndCards(0,"AS");
+        assertEndCards(2,"8H,JH,6H,KH,KS");
+        assertEndCards(3,"8C,8D,2D");
+        assertTurn("2");//assert it's still Player 2's turn to be able to play the last card to end the game
 
         allDrivers[1].findElement(By.id("TC")).click();//P2 Plays TC
         TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
         //cant assert this as top card since game is over
 
-//        //assert Round ended
-//        assertTurn("2");//assert Player 2 is still the Correct Turn since they Won the Round
-//        for (int i = 0; i < allDrivers.length; i++) {
-//            WebElement startBtn = allDrivers[i].findElement(By.id("startBtn"));
-//            List<WebElement> scoreList = allDrivers[i].findElements(By.id("scoreList"));
-//            if (i == 1){
-//                assertTrue(startBtn.isDisplayed());//assert that the start game button is only on player 2 browser
-//                for(int scorei = 1; scorei < scoreList.size();scorei++){//start at index 1 since 0 is Score title
-//                    //assert that player 2 score is still 0 while everyone else is above 0, in every browser
-//                    String plyrScore = scoreList.get(i).getText();
-//                    int plyrScoreNum = Character.getNumericValue(plyrScore.charAt(plyrScore.length() - 1));
-//
-//                    if(scorei == 2){//Player 2, check if the
-//                        assertEquals(0,plyrScoreNum);
-//                    } else {
-//                        assertTrue(0 < plyrScoreNum );
-//                    }
-//                }
-//            }else{
-//                assertFalse(startBtn.isDisplayed());
-//            }
-//        }
+        //assert Round ended
+        assertTurn("2");//assert Player 2 is still the Correct Turn since they Won the Round
+        for (int i = 0; i < allDrivers.length; i++) {
+            List<WebElement> scoreList = allDrivers[i].findElements(By.id("scoreList"));
+            WebElement winMSG = allDrivers[i].findElement(By.id("winMSG"));//assert winner message for all players, winMSG = WINNER IS PLAYER 2
+            assertEquals("WINNER IS PLAYER 2",winMSG.getText());
+            for(int scorei = 1; scorei < scoreList.size();scorei++){//start at index 1 since 0 is Score title
+                //assert all scores on browsers are 1,0,86,102 and winner msg is displayed correctly
+                String plyrScore = scoreList.get(i).getText();
+                int plyrScoreNum = Character.getNumericValue(plyrScore.charAt(plyrScore.length() - 1));
+
+                if(scorei == 1){//Player 1, check if the
+                    assertEquals(1,plyrScoreNum);
+                } else if(scorei == 2){//Player 2, check if the
+                    assertEquals(0,plyrScoreNum);
+                } else if(scorei == 3){//Player 3, check if the
+                    assertEquals(86,plyrScoreNum);
+                } else if(scorei == 4){//Player 4, check if the
+                    assertEquals(102,plyrScoreNum);
+                }
+
+            }
+        }
 
     }
     ////////////////////////////////TEST RIG FUNCTIONS(NEXT TURN)////////////////////////////////
@@ -2042,5 +2050,13 @@ public class AcceptanceTest {
     }
     public void assertOnlyDrawn(int plyrIndex, String card) throws InterruptedException {
         assertNotNull(allDrivers[plyrIndex].findElement(By.id("hand")).findElement(By.id(card)));//assert the card is in player's hand
+    }
+    public void assertEndCards(int plyrIndex,String endHand){
+        allDrivers[plyrIndex].findElement(By.id("hand"));
+        List<WebElement> plyrHand = allDrivers[plyrIndex].findElement(By.id("hand")).findElements(By.className("card"));
+        String[] plyrEndHand = endHand.split(",");
+        for (int i = 0; i < plyrHand.size();i++) {
+            assertEquals(plyrEndHand[i],plyrHand.get(i).getAttribute("id"));
+        }
     }
 }
