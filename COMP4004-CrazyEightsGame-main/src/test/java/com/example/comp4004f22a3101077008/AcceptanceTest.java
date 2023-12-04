@@ -781,7 +781,7 @@ public class AcceptanceTest {
     }
     @Test
     @DirtiesContext
-    @DisplayName("Test Row 44: Drawing Rules, draws 3 cards and thas to play it")
+    @DisplayName("Test Row 44: Drawing Rules, draws 3 cards and has to play it")
     //top card is 7C and p1 has {3H} as hand: must draw, draws 6D, 5S then 7H and must play it
     public void testRow44() throws InterruptedException {
         rigTestRow44();//rigs deck for this test
@@ -816,6 +816,46 @@ public class AcceptanceTest {
         TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
 
         assertTopCard("7H");//check all players windows they display the correct top card after it was played
+    }
+    @Test
+    @DirtiesContext
+    @DisplayName("Test Row 45: Drawing Rules, draws 3 cards and ends turn")
+    //top card is 7C and p1 has {3H} as hand: must draw, draws 6D, 5S, 4H; still can't play: turn ends (ie max 3 cards drawn)
+    public void testRow45() throws InterruptedException {
+        rigTestRow45();//rigs deck for this test
+
+        WebDriverWait wait = new WebDriverWait(allDrivers[0], Duration.ofSeconds(20));
+        wait.until(ExpectedConditions.elementToBeClickable(By.id("startBtn"))).click();//waits till start button pops up and starts the game with the rigged deck
+
+        verifyDeckCount();
+
+        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+
+        assertTopCard("3D");//check all players windows they display the correct starting top card
+
+        int numLoopPlayed = 4;
+        for (int i = 0; i < numLoopPlayed; i++) {//Set up of playing their cards until we get to 7C as top card
+            for (WebDriver currPlayer : allDrivers) {
+                List<WebElement> plyrHand = currPlayer.findElement(By.id("hand")).findElements(By.className("card"));
+                plyrHand.get(0).click();
+                TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+            }
+        }
+        String savedTopCard = allDrivers[0].findElement(By.className("topCard")).getAttribute("id");
+        assertTopCard("7C");//check all players windows they display the correct top card for the start of the scenario
+
+        assertDrawnCard(0,"6D",false);//assert non playable drawn card is in hand and draw button is still enabled
+
+        assertDrawnCard(0,"5S",false);//assert non playable drawn card is in hand and draw button is still enabled
+
+        assertTurn("1");//used the manual code since we drawbtn will be disabled since end of turn, instead of enabled since its still a non playable card
+        allDrivers[0].findElement(By.id("draw")).click();
+        assertNotNull(allDrivers[0].findElement(By.id("hand")).findElement(By.id("4H")));//assert the card is in player's hand
+        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+
+        assertTurn("2");//assert current turn is the next player
+        assertTopCard("7C");//check all players windows the top card is the same
+        assertEquals(savedTopCard,allDrivers[0].findElement(By.className("topCard")).getAttribute("id"));//check the top card is still set to 7C
     }
     ////////////////////////////////TEST RIG FUNCTIONS(NEXT TURN)////////////////////////////////
     public void rigTestRow25(){
@@ -1172,6 +1212,16 @@ public class AcceptanceTest {
 
         rigAllPlayers(topCard,p1Card,p2Card,p3Card,p4Card,drawCard);
     }
+    public void rigTestRow45(){
+        String topCard = "3D";
+        String p1Card = "4D 9H 6S 9C 3H";
+        String p2Card = "5D 7H 4S 6C";
+        String p3Card = "7D 5H 7S 5C";
+        String p4Card = "9D 6H 9S 7C";
+        String drawCard = "6D 5S 4H";
+
+        rigAllPlayers(topCard,p1Card,p2Card,p3Card,p4Card,drawCard);
+    }
     ////////////////////////////////RIGGING HELPER FUNCTIONS////////////////////////////////
     public String removeCard(String gameDeck, String allCards){//
         String[] allGivenCards = allCards.split("\\s+");
@@ -1275,7 +1325,7 @@ public class AcceptanceTest {
             game.startDealCards(gd.getCards(), gd.getPlayers(), p.getID() - 1);
         }
     }
-    ///////////////////////////////////////ASSERTS////////////////////
+    ////////////////////////////////ASSERT FUNCTIONS////////////////////////////////
     public void assertDrawnCard(int plyrIndex, String card, Boolean playable) throws InterruptedException {
         for (int i = 0; i < allDrivers.length; i++) {//check all players windows if draw button is only enabled for that player and the drawed card is in their hand, but is not playable
             WebElement drawBtn = allDrivers[i].findElement(By.id("draw"));
@@ -1310,6 +1360,20 @@ public class AcceptanceTest {
         for (WebDriver playerBrowser : allDrivers) {//check all players windows they display the correct starting top card
             String topCard = playerBrowser.findElement(By.className("topCard")).getAttribute("id");
             assertEquals(correctTopCard, topCard);
+        }
+    }
+    public void assertTurn(String correctPlyrTurn){
+        for (int i = 0; i < allDrivers.length; i++) {
+            String playerTurn = allDrivers[i].findElement(By.id("turnID")).getText();
+            assertEquals("Turn: " + correctPlyrTurn,playerTurn);//check all players windows they display that player as current turn
+
+            WebElement drawBtn = allDrivers[i].findElement(By.id("draw"));
+            if (i == Integer.parseInt(correctPlyrTurn) - 1){
+                assertTrue(drawBtn.isEnabled());
+            }//assert only that player's draw button is enabled
+            else{
+                assertFalse(drawBtn.isEnabled());
+            }
         }
     }
 }
