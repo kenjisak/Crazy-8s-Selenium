@@ -897,6 +897,41 @@ public class AcceptanceTest {
         TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
         assertTopCard("D");//assert the correct suit was set as a top card
     }
+    @Test
+    @DirtiesContext
+    @DisplayName("Test Row 47: Drawing Rules, has playable cards, but chooses to draw anyway")
+    //top card is 7C and p1 has {KS, 3C} as hand: chooses to draw, draws 6C and must play 6C
+    public void testRow47() throws InterruptedException {
+        rigTestRow47();//rigs deck for this test
+
+        WebDriverWait wait = new WebDriverWait(allDrivers[0], Duration.ofSeconds(20));
+        wait.until(ExpectedConditions.elementToBeClickable(By.id("startBtn"))).click();//waits till start button pops up and starts the game with the rigged deck
+
+        verifyDeckCount();
+
+        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+
+        assertTopCard("3D");//check all players windows they display the correct top card for the start of the scenario
+
+        int numLoopPlayed = 3;
+        for (int i = 0; i < numLoopPlayed; i++) {//Set up of playing their cards until we get to 7C as top card
+            for (WebDriver currPlayer : allDrivers) {
+                List<WebElement> plyrHand = currPlayer.findElement(By.id("hand")).findElements(By.className("card"));
+                plyrHand.get(0).click();
+                TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+            }
+        }
+
+        assertTopCard("7C");//check all players windows they display the correct top card for the start of the scenario
+
+        //chooses to draw anyway
+        assertDrawnCard(0,"6C",true);//assert playable drawn card is in hand, the only one enabled, and draw button is disabled
+
+        allDrivers[0].findElement(By.id("6C")).click();//P1 had to play 6C
+        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+
+        assertTopCard("6C");//check all players windows they display the correct top card after it was played
+    }
     ////////////////////////////////TEST RIG FUNCTIONS(NEXT TURN)////////////////////////////////
     public void rigTestRow25(){
         String topCard = "5C";
@@ -1269,6 +1304,16 @@ public class AcceptanceTest {
         String p3Card = "7D 6H 7S 3C";
         String p4Card = "9D 5H 9S 7C";
         String drawCard = "6D 8H";
+
+        rigAllPlayers(topCard,p1Card,p2Card,p3Card,p4Card,drawCard);
+    }
+    public void rigTestRow47(){
+        String topCard = "3D";
+        String p1Card = "9D 5S 9C KS 3C";
+        String p2Card = "7D 6S 5C";
+        String p3Card = "6D 7S 4C";
+        String p4Card = "5D 9S 7C";
+        String drawCard = "6C";
 
         rigAllPlayers(topCard,p1Card,p2Card,p3Card,p4Card,drawCard);
     }
