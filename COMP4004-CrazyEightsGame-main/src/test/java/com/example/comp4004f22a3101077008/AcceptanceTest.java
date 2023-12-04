@@ -1119,6 +1119,70 @@ public class AcceptanceTest {
         assertTopCard("2C");//check all players windows the top card is the same
         assertEquals(savedTopCard,allDrivers[1].findElement(By.className("topCard")).getAttribute("id"));//check the top card is still set to 2C
     }
+    @Test
+    @DirtiesContext
+    @DisplayName("Test Row 55: Playing Twos, immediately draws 2 cards and plays a 2, so next player draws 4")
+    //p1 plays 2C, p2 has {4H} draws {2H and 9D} then plays 2H (forcing next player to immediately play or draw 4 cards)
+    //then p3 having only {7D} p3 draws {5S, 6D, 6H and 7C} and then  plays 6H
+    public void testRow55() throws InterruptedException {
+        rigTestRow55();//rigs deck for this test
+
+        WebDriverWait wait = new WebDriverWait(allDrivers[0], Duration.ofSeconds(20));
+        wait.until(ExpectedConditions.elementToBeClickable(By.id("startBtn"))).click();//waits till start button pops up and starts the game with the rigged deck
+
+        verifyDeckCount();
+
+        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+
+        assertTopCard("3D");//check all players windows they display the correct top card for the start of the scenario
+
+        int numLoopPlayed = 3;
+        for (int i = 0; i < numLoopPlayed; i++) {//Set up of playing their cards until we get to 7C as top card
+            for (WebDriver currPlayer : allDrivers) {
+                List<WebElement> plyrHand = currPlayer.findElement(By.id("hand")).findElements(By.className("card"));
+                String plyrCardPlayed = plyrHand.get(0).getAttribute("id");
+                plyrHand.get(0).click();
+                assertTopCard(plyrCardPlayed);//asserts each card played is the new top card
+                TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+            }
+        }
+
+        allDrivers[1].findElement(By.id("7S")).click();//P2 Plays 7S since P1 was skipped
+        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+        assertTopCard("7S");//check all players windows they display the correct top card for the start of the scenario
+
+        allDrivers[2].findElement(By.id("9S")).click();//P3 Plays 9S
+        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+        assertTopCard("9S");//check all players windows they display the correct top card for the start of the scenario
+
+        allDrivers[3].findElement(By.id("9C")).click();//P4 Plays 9C
+        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+        assertTopCard("9C");//check all players windows they display the correct top card for the start of the scenario
+
+        allDrivers[0].findElement(By.id("2C")).click();//P1 Plays 2C so itll be the topCard after P4 played
+        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+        assertTopCard("2C");//check all players windows they display the correct top card for the start of the scenario
+
+        //2C was played so assert P2 received the correct cards
+        assertOnlyDrawn(1,"2H");//P2 draw card and assert drawn card is in hand
+        assertOnlyDrawn(1,"9D");//P2 draw card and assert drawn card is in hand
+        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+
+        allDrivers[1].findElement(By.id("2H")).click();//P2 plays 2H
+        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+        assertTopCard("2H");//check all players windows they display the correct top card after it was played
+
+        //2H was played so assert P3 received the correct cards
+        assertOnlyDrawn(2,"5S");//P3 draw card and assert drawn card is in hand
+        assertOnlyDrawn(2,"6D");//P3 draw card and assert drawn card is in hand
+        assertOnlyDrawn(2,"6H");//P3 draw card and assert drawn card is in hand
+        assertOnlyDrawn(2,"7C");//P3 draw card and assert drawn card is in hand
+        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+
+        allDrivers[2].findElement(By.id("6H")).click();//P3 plays 6H
+        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+        assertTopCard("6H");//check all players windows they display the correct top card after it was played
+    }
     ////////////////////////////////TEST RIG FUNCTIONS(NEXT TURN)////////////////////////////////
     public void rigTestRow25(){
         String topCard = "5C";
@@ -1535,6 +1599,16 @@ public class AcceptanceTest {
 
         rigAllPlayers(topCard,p1Card,p2Card,p3Card,p4Card,drawCard);
     }
+    public void rigTestRow55(){
+        String topCard = "3D";//1
+        String p1Card = "4D KH TS 2C";//4
+        String p2Card = "5D 5H 3S 7S 4H";//5
+        String p3Card = "TD 3H 4S 9S 7D";//5
+        String p4Card = "KD TH QS 9C";//4
+        String drawCard = "2H 9D 5S 6D 6H 7C";//6
+
+        rigAllPlayers(topCard,p1Card,p2Card,p3Card,p4Card,drawCard);
+    }
     ////////////////////////////////RIGGING HELPER FUNCTIONS////////////////////////////////
     public String removeCard(String gameDeck, String allCards){//
         String[] allGivenCards = allCards.split("\\s+");
@@ -1545,12 +1619,13 @@ public class AcceptanceTest {
             updatedGD = updatedGD.replace(card, "");
         }
 
-        if(updatedGD.charAt(0) == ' '){//removes extra spacing if the card was the first or last card
-            updatedGD = updatedGD.substring(1);
-        } else if (updatedGD.charAt(updatedGD.length() - 1) == ' ') {
-            updatedGD = updatedGD.substring(0,updatedGD.length() - 2);
-        }
-        return updatedGD;
+//        if(updatedGD.charAt(0) == ' '){//removes extra spacing if the card was the first or last card
+//            updatedGD = updatedGD.substring(1);
+//        } else if (updatedGD.charAt(updatedGD.length() - 1) == ' ') {
+//            updatedGD = updatedGD.substring(0,updatedGD.length() - 1);
+//        }
+
+        return updatedGD.trim();//remove leading or trailing spaces
     }
     public ArrayList<Card> createCards(String cards){
 
@@ -1580,16 +1655,22 @@ public class AcceptanceTest {
         String rig = "AH 2H 3H 4H 5H 6H 7H 8H 9H TH JH QH KH AS 2S 3S 4S 5S 6S 7S 8S 9S TS JS QS KS AC 2C 3C 4C 5C 6C 7C 8C 9C TC JC QC KC AD 2D 3D 4D 5D 6D 7D 8D 9D TD JD QD KD";//populated deck
         //remove cards we want to rig
         rig = removeCard(rig,topCard);
+//        assertEquals(52 - 1, createCards(rig).size());
         rig = removeCard(rig,p1Card);
+//        assertEquals(52 - 1 - 4, createCards(rig).size());
         rig = removeCard(rig,p2Card);
+//        assertEquals(52 - 1 - 4 - 5, createCards(rig).size());
         rig = removeCard(rig,p3Card);
+//        assertEquals(52 - 1 - 4 - 5 - 5, createCards(rig).size());
         rig = removeCard(rig,p4Card);
+//        assertEquals(52 - 1 - 4 - 5 - 5 - 4, createCards(rig).size());
         if(!drawCard.isEmpty()){
             rig = removeCard(rig,drawCard);
+//            assertEquals(52 - 1 - 4 - 5 - 5 - 4 - 6, createCards(rig).size());
         }
 
         ArrayList<Card> gameDeck = createCards(rig);
-//        int cardSize = 1 + 5 + 4 + 4 + 4 + 1;
+//        int cardSize = 1 + 4 + 5 + 5 + 4 + 6;
 //        assertEquals(52 - cardSize, gameDeck.size());
 
         gd.setCards(gameDeck);//setCards with populated Deck
