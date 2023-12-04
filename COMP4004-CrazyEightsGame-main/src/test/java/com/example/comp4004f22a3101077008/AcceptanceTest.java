@@ -857,6 +857,46 @@ public class AcceptanceTest {
         assertTopCard("7C");//check all players windows the top card is the same
         assertEquals(savedTopCard,allDrivers[0].findElement(By.className("topCard")).getAttribute("id"));//check the top card is still set to 7C
     }
+    @Test
+    @DirtiesContext
+    @DisplayName("Test Row 46: Drawing Rules, draws 2 cards and has to play an 8 card")
+    //top card is 7C and p1 has {3H} as hand: must draw, draws 6D then 8H; must play 8H and declare new suit
+    public void testRow46() throws InterruptedException {
+        rigTestRow46();//rigs deck for this test
+
+        WebDriverWait wait = new WebDriverWait(allDrivers[0], Duration.ofSeconds(20));
+        wait.until(ExpectedConditions.elementToBeClickable(By.id("startBtn"))).click();//waits till start button pops up and starts the game with the rigged deck
+
+        verifyDeckCount();
+
+        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+
+        assertTopCard("3D");//check all players windows they display the correct starting top card
+
+        int numLoopPlayed = 4;
+        for (int i = 0; i < numLoopPlayed; i++) {//Set up of playing their cards until we get to 7C as top card
+            for (WebDriver currPlayer : allDrivers) {
+                List<WebElement> plyrHand = currPlayer.findElement(By.id("hand")).findElements(By.className("card"));
+                plyrHand.get(0).click();
+                TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+            }
+        }
+
+        assertTopCard("7C");//check all players windows they display the correct top card for the start of the scenario
+
+        assertDrawnCard(0,"6D",false);//assert non playable drawn card is in hand and draw button is still enabled
+
+        assertDrawnCard(0,"8H",true);//assert playable drawn card is in hand, the only one enabled, and draw button is disabled
+
+        allDrivers[0].findElement(By.id("8H")).click();//P1 had to play 8H
+        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+
+        assertTopCard("8H");//check all players windows they display the correct top card after it was played
+        assert8PlayedBtns(0);//assert only Player 1 has the suit buttons when 8 was played
+        allDrivers[0].findElement(By.id("diamond")).click();//declare a suit
+        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+        assertTopCard("D");//assert the correct suit was set as a top card
+    }
     ////////////////////////////////TEST RIG FUNCTIONS(NEXT TURN)////////////////////////////////
     public void rigTestRow25(){
         String topCard = "5C";
@@ -1222,6 +1262,16 @@ public class AcceptanceTest {
 
         rigAllPlayers(topCard,p1Card,p2Card,p3Card,p4Card,drawCard);
     }
+    public void rigTestRow46(){
+        String topCard = "3D";
+        String p1Card = "4D 9H 5S 9C 3H";
+        String p2Card = "5D 7H 6S 6C";
+        String p3Card = "7D 6H 7S 3C";
+        String p4Card = "9D 5H 9S 7C";
+        String drawCard = "6D 8H";
+
+        rigAllPlayers(topCard,p1Card,p2Card,p3Card,p4Card,drawCard);
+    }
     ////////////////////////////////RIGGING HELPER FUNCTIONS////////////////////////////////
     public String removeCard(String gameDeck, String allCards){//
         String[] allGivenCards = allCards.split("\\s+");
@@ -1373,6 +1423,23 @@ public class AcceptanceTest {
             }//assert only that player's draw button is enabled
             else{
                 assertFalse(drawBtn.isEnabled());
+            }
+        }
+    }
+    public void assert8PlayedBtns(int plyrIndex){
+        for (int i = 0; i < allDrivers.length; i++) {
+            WebElement suitBtns = allDrivers[i].findElement(By.id("8Played"));
+            if (i == plyrIndex){
+                assertTrue(suitBtns.findElement(By.id("spade")).isDisplayed());
+                assertTrue(suitBtns.findElement(By.id("heart")).isDisplayed());
+                assertTrue(suitBtns.findElement(By.id("club")).isDisplayed());
+                assertTrue(suitBtns.findElement(By.id("diamond")).isDisplayed());
+            }//assert only player 1 has the suits button displayed after playing an 8 card, its always enabled, even if its hidden
+            else{
+                assertFalse(suitBtns.findElement(By.id("spade")).isDisplayed());
+                assertFalse(suitBtns.findElement(By.id("heart")).isDisplayed());
+                assertFalse(suitBtns.findElement(By.id("club")).isDisplayed());
+                assertFalse(suitBtns.findElement(By.id("diamond")).isDisplayed());
             }
         }
     }
