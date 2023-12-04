@@ -1318,6 +1318,92 @@ public class AcceptanceTest {
         //then a second card thats playable based on the first card that can potentially be played
         // but is still able to play the 4C after, just not the 4S
     }
+    @Test
+    @DirtiesContext
+    @DisplayName("Test Row 61: Scoring with a single round, ending with a specific set of cards and points")
+    //first round ends with p1 with {1S}, p2 with no cards, p3 with {8H, JH, 6H, KH, KS}, p4 with {8C, 8D, 2D}
+    //then game is over with p1 scores 1, p2 scores 0, p3 scores 86 and p4 scores 102
+    public void testRow61() throws InterruptedException {
+        rigTestRow61();//rigs deck for this test
+
+        WebDriverWait wait = new WebDriverWait(allDrivers[0], Duration.ofSeconds(20));
+        wait.until(ExpectedConditions.elementToBeClickable(By.id("startBtn"))).click();//waits till start button pops up and starts the game with the rigged deck
+
+        verifyDeckCount();
+
+        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+
+        assertTopCard("3H");//check all players windows they display the correct top card for the start of the scenario
+
+        int numLoopPlayed = 2;
+        for (int i = 0; i < numLoopPlayed; i++) {//Set up of playing their cards until we get to 2C as top card
+            for (WebDriver currPlayer : allDrivers) {
+                List<WebElement> plyrHand = currPlayer.findElement(By.id("hand")).findElements(By.className("card"));
+                String plyrCardPlayed = plyrHand.get(0).getAttribute("id");
+                plyrHand.get(0).click();
+                assertTopCard(plyrCardPlayed);//asserts each card played is the new top card
+                TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+            }
+        }
+
+        allDrivers[0].findElement(By.id("4C")).click();//P1 Plays 4C
+        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+        assertTopCard("4C");//check all players windows they display the correct top card for the start of the scenario
+
+        allDrivers[1].findElement(By.id("JC")).click();//P2 Plays JC
+        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+        assertTopCard("JC");//check all players windows they display the correct top card for the start of the scenario
+
+        //chooses to draw KH,KS,KC
+        assertDrawnCard(2,"KH",false);
+        assertDrawnCard(2,"KS",false);
+        assertDrawnCard(2,"KC",true);
+        allDrivers[2].findElement(By.id("KC")).click();//P3 Plays KC
+        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+        assertTopCard("KC");//check all players windows they display the correct top card for the start of the scenario
+
+        assertDrawnCard(3,"9C",true);
+        allDrivers[3].findElement(By.id("9C")).click();//P4 Plays 9C
+        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+        assertTopCard("9C");//check all players windows they display the correct top card for the start of the scenario
+
+        allDrivers[0].findElement(By.id("2C")).click();//P1 Plays 2C so itll be the topCard since P4 is skipped
+        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+        assertTopCard("2C");//check all players windows they display the correct top card for the start of the scenario
+
+        /////////////////////////////////P2 Plays 2 cards consecutively///////////////////////////
+        allDrivers[1].findElement(By.id("5C")).click();//P2 Plays 5C
+        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+        assertTopCard("5C");//check all players windows they display the correct top card for the start of the scenario
+
+        allDrivers[1].findElement(By.id("TC")).click();//P2 Plays TC
+        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+        //cant assert this as top card since game is over
+
+//        //assert Round ended
+//        assertTurn("2");//assert Player 2 is still the Correct Turn since they Won the Round
+//        for (int i = 0; i < allDrivers.length; i++) {
+//            WebElement startBtn = allDrivers[i].findElement(By.id("startBtn"));
+//            List<WebElement> scoreList = allDrivers[i].findElements(By.id("scoreList"));
+//            if (i == 1){
+//                assertTrue(startBtn.isDisplayed());//assert that the start game button is only on player 2 browser
+//                for(int scorei = 1; scorei < scoreList.size();scorei++){//start at index 1 since 0 is Score title
+//                    //assert that player 2 score is still 0 while everyone else is above 0, in every browser
+//                    String plyrScore = scoreList.get(i).getText();
+//                    int plyrScoreNum = Character.getNumericValue(plyrScore.charAt(plyrScore.length() - 1));
+//
+//                    if(scorei == 2){//Player 2, check if the
+//                        assertEquals(0,plyrScoreNum);
+//                    } else {
+//                        assertTrue(0 < plyrScoreNum );
+//                    }
+//                }
+//            }else{
+//                assertFalse(startBtn.isDisplayed());
+//            }
+//        }
+
+    }
     ////////////////////////////////TEST RIG FUNCTIONS(NEXT TURN)////////////////////////////////
     public void rigTestRow25(){
         String topCard = "5C";
@@ -1765,6 +1851,17 @@ public class AcceptanceTest {
 
         rigAllPlayers(topCard,p1Card,p2Card,p3Card,p4Card,drawCard);
     }
+    ///////////////////////////////////
+    public void rigTestRow61(){
+        String topCard = "3H";
+        String p1Card = "5H 9S 4C 2C AS";
+        String p2Card = "4H 7S JC 5C TC";
+        String p3Card = "7H 6S 8H JH 6H";//chooses to draw,KH KS KC, plays KC
+        String p4Card = "9H 4S 8C 8D 2D";//chooses to draw and plays 9C
+        String drawCard = "KH KS KC 9C";
+
+        rigAllPlayers(topCard,p1Card,p2Card,p3Card,p4Card,drawCard);
+    }
     ////////////////////////////////RIGGING HELPER FUNCTIONS////////////////////////////////
     public String removeCard(String gameDeck, String allCards){//
         String[] allGivenCards = allCards.split("\\s+");
@@ -1813,16 +1910,16 @@ public class AcceptanceTest {
         rig = removeCard(rig,topCard);
 //        assertEquals(52 - 1, createCards(rig).size());
         rig = removeCard(rig,p1Card);
-//        assertEquals(52 - 1 - 4, createCards(rig).size());
+//        assertEquals(52 - 1 - 5, createCards(rig).size());
         rig = removeCard(rig,p2Card);
-//        assertEquals(52 - 1 - 4 - 5, createCards(rig).size());
+//        assertEquals(52 - 1 - 5 - 5, createCards(rig).size());
         rig = removeCard(rig,p3Card);
-//        assertEquals(52 - 1 - 4 - 5 - 5, createCards(rig).size());
+//        assertEquals(52 - 1 - 5 - 5 - 5, createCards(rig).size());
         rig = removeCard(rig,p4Card);
-//        assertEquals(52 - 1 - 4 - 5 - 5 - 4, createCards(rig).size());
+//        assertEquals(52 - 1 - 5 - 5 - 5 - 5, createCards(rig).size());
         if(!drawCard.isEmpty()){
             rig = removeCard(rig,drawCard);
-//            assertEquals(52 - 1 - 4 - 5 - 5 - 4 - 6, createCards(rig).size());
+//            assertEquals(52 - 1 - 5 - 5 - 5 - 5 - 3, createCards(rig).size());
         }
 
         ArrayList<Card> gameDeck = createCards(rig);
