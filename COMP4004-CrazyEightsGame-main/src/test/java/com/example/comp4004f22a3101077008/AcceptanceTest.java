@@ -1200,7 +1200,7 @@ public class AcceptanceTest {
         assertTopCard("3D");//check all players windows they display the correct top card for the start of the scenario
 
         int numLoopPlayed = 1;
-        for (int i = 0; i < numLoopPlayed; i++) {//Set up of playing their cards until we get to 7C as top card
+        for (int i = 0; i < numLoopPlayed; i++) {//Set up of playing their cards until we get to 2C as top card
             for (WebDriver currPlayer : allDrivers) {
                 List<WebElement> plyrHand = currPlayer.findElement(By.id("hand")).findElements(By.className("card"));
                 String plyrCardPlayed = plyrHand.get(0).getAttribute("id");
@@ -1236,6 +1236,87 @@ public class AcceptanceTest {
         assertTopCard("6C");//check all players windows they display the correct top card for the start of the scenario
 
         assertTurn("3");//assert the next correct player is displayed
+    }
+    @Test
+    @DirtiesContext
+    @DisplayName("Test Row 57: Playing Twos, but is able to play 2 cards immediately but ends the round")
+    //p1 plays 2C, p2 has {4C, 4S} then p2 plays 4C and 4S and ends round (because p2 played all their cards)
+    public void testRow57() throws InterruptedException {
+        rigTestRow57();//rigs deck for this test
+
+        WebDriverWait wait = new WebDriverWait(allDrivers[0], Duration.ofSeconds(20));
+        wait.until(ExpectedConditions.elementToBeClickable(By.id("startBtn"))).click();//waits till start button pops up and starts the game with the rigged deck
+
+        verifyDeckCount();
+
+        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+
+        assertTopCard("3D");//check all players windows they display the correct top card for the start of the scenario
+
+        int numLoopPlayed = 2;
+        for (int i = 0; i < numLoopPlayed; i++) {//Set up of playing their cards until we get to 2C as top card
+            for (WebDriver currPlayer : allDrivers) {
+                List<WebElement> plyrHand = currPlayer.findElement(By.id("hand")).findElements(By.className("card"));
+                String plyrCardPlayed = plyrHand.get(0).getAttribute("id");
+                plyrHand.get(0).click();
+                assertTopCard(plyrCardPlayed);//asserts each card played is the new top card
+                TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+            }
+        }
+
+        allDrivers[0].findElement(By.id("TC")).click();//P1 Plays TC
+        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+        assertTopCard("TC");//check all players windows they display the correct top card for the start of the scenario
+
+        allDrivers[1].findElement(By.id("9C")).click();//P2 Plays 9C
+        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+        assertTopCard("9C");//check all players windows they display the correct top card for the start of the scenario
+
+        allDrivers[2].findElement(By.id("QC")).click();//P3 Plays QC
+        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+        assertTopCard("QC");//check all players windows they display the correct top card for the start of the scenario
+
+        allDrivers[0].findElement(By.id("2C")).click();//P1 Plays 2C so itll be the topCard since P4 is skipped
+        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+        assertTopCard("2C");//check all players windows they display the correct top card for the start of the scenario
+
+        /////////////////////////////////P2 Plays 2 cards consecutively///////////////////////////
+        allDrivers[1].findElement(By.id("4C")).click();//P2 Plays 4C
+        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+        assertTopCard("4C");//check all players windows they display the correct top card for the start of the scenario
+
+        allDrivers[1].findElement(By.id("4S")).click();//P2 Plays 4S
+        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+        //cant assert this as top card since round is over
+
+        //assert Round ended
+        assertTurn("2");//assert Player 2 is still the Correct Turn since they Won the Round
+        for (int i = 0; i < allDrivers.length; i++) {
+            WebElement startBtn = allDrivers[i].findElement(By.id("startBtn"));
+            List<WebElement> scoreList = allDrivers[i].findElements(By.id("scoreList"));
+            if (i == 1){
+                assertTrue(startBtn.isDisplayed());//assert that the start game button is only on player 2 browser
+                for(int scorei = 1; scorei < scoreList.size();scorei++){//start at index 1 since 0 is Score title
+                    //assert that player 2 score is still 0 while everyone else is above 0, in every browser
+                    String plyrScore = scoreList.get(i).getText();
+                    int plyrScoreNum = Character.getNumericValue(plyrScore.charAt(plyrScore.length() - 1));
+
+                    if(scorei == 2){//Player 2, check if the
+                        assertEquals(0,plyrScoreNum);
+                    } else {
+                        assertTrue(0 < plyrScoreNum );
+                    }
+                }
+            }else{
+                assertFalse(startBtn.isDisplayed());
+            }
+        }
+
+        //potential bug
+        //even though 4S and 4C is in hand (in that order), will still be forced to draw 2 cards after a 2 is played.
+        //so its not iterating through the whole hand to see if there is the first card thats playable,
+        //then a second card thats playable based on the first card that can potentially be played
+        // but is still able to play the 4C after, just not the 4S
     }
     ////////////////////////////////TEST RIG FUNCTIONS(NEXT TURN)////////////////////////////////
     public void rigTestRow25(){
@@ -1669,6 +1750,17 @@ public class AcceptanceTest {
         String p2Card = "5D 5C 4C 6C 9D";
         String p3Card = "6D QC";
         String p4Card = "7D";
+        String drawCard = "";
+
+        rigAllPlayers(topCard,p1Card,p2Card,p3Card,p4Card,drawCard);
+    }
+    public void rigTestRow57(){
+        String topCard = "3D";
+        String p1Card = "4D 7H TC 2C";
+        String p2Card = "5D 6H 9C 4C 4S";
+//        String p2Card = "5D 6H 9C 4S 4C";//replace with this to reproduce bug
+        String p3Card = "6D 5H QC";
+        String p4Card = "7D TH";
         String drawCard = "";
 
         rigAllPlayers(topCard,p1Card,p2Card,p3Card,p4Card,drawCard);
