@@ -1378,9 +1378,9 @@ public class AcceptanceTest {
         assertTopCard("5C");//check all players windows they display the correct top card for the start of the scenario
 
         //can only assert ending hands before the last card is played here. Since hands are not displayed anymore after that.
-        assertEndCards(0,"AS");
-        assertEndCards(2,"8H,JH,6H,KH,KS");
-        assertEndCards(3,"8C,8D,2D");
+        assertHand(0,"AS");
+        assertHand(2,"8H,JH,6H,KH,KS");
+        assertHand(3,"8C,8D,2D");
         assertTurn("2");//assert it's still Player 2's turn to be able to play the last card to end the game
 
         allDrivers[1].findElement(By.id("TC")).click();//P2 Plays TC
@@ -2051,7 +2051,7 @@ public class AcceptanceTest {
     public void assertOnlyDrawn(int plyrIndex, String card) throws InterruptedException {
         assertNotNull(allDrivers[plyrIndex].findElement(By.id("hand")).findElement(By.id(card)));//assert the card is in player's hand
     }
-    public void assertEndCards(int plyrIndex,String endHand){
+    public void assertHand(int plyrIndex,String endHand){
         allDrivers[plyrIndex].findElement(By.id("hand"));
         List<WebElement> plyrHand = allDrivers[plyrIndex].findElement(By.id("hand")).findElements(By.className("card"));
         String[] plyrEndHand = endHand.split(",");
