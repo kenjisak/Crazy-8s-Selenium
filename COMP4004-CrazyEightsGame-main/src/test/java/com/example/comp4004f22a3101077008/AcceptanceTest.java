@@ -1412,6 +1412,19 @@ public class AcceptanceTest {
         }
 
     }
+    @Test
+    @DirtiesContext
+    @DisplayName("Test Row 64: Testing a Complete Game")
+    public void testRow64() throws InterruptedException {
+        rigTestRow64Round1();//rigs deck for this test, round 1
+
+        WebDriverWait wait = new WebDriverWait(allDrivers[0], Duration.ofSeconds(20));
+        wait.until(ExpectedConditions.elementToBeClickable(By.id("startBtn"))).click();//waits till start button pops up and starts the game with the rigged deck
+
+        verifyDeckCount();
+
+        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+    }
     ////////////////////////////////TEST RIG FUNCTIONS(NEXT TURN)////////////////////////////////
     public void rigTestRow25(){
         String topCard = "5C";
@@ -1867,6 +1880,27 @@ public class AcceptanceTest {
         String p3Card = "7H 6S 8H JH 6H";//chooses to draw,KH KS KC, plays KC
         String p4Card = "9H 4S 8C 8D 2D";//chooses to draw and plays 9C
         String drawCard = "KH KS KC 9C";
+
+        rigAllPlayers(topCard,p1Card,p2Card,p3Card,p4Card,drawCard);
+    }
+    ///////////////////////////////////
+    public void rigTestRow64Round1(){
+        String topCard = "4D";
+        String p1Card = "4H 7S 5D 6D 9D";
+        String p2Card = "4S 6S KC 8H TD";
+        String p3Card = "9S 6C 9C JD 3H";
+        String p4Card = "7D JH QH KH 5C";
+        String drawCard = "2C 3C 4C TC JC 7C";
+
+        rigAllPlayers(topCard,p1Card,p2Card,p3Card,p4Card,drawCard);
+    }
+    public void rigTestRow64Round2(){
+        String topCard = "TD";
+        String p1Card = "7D 4S 7C 4H 5D";
+        String p2Card = "9D 3S 9C 3H JC";
+        String p3Card = "3D 9S 3C 9H 5H";
+        String p4Card = "4D 7S 4C 5S 8D";
+        String drawCard = "KS QS KH 6D QD JD 6S JS TS";
 
         rigAllPlayers(topCard,p1Card,p2Card,p3Card,p4Card,drawCard);
     }
