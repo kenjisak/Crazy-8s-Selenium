@@ -1536,8 +1536,9 @@ public class AcceptanceTest {
         TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
 
         //7D 5D 6D QD JD
+        //JC 6S JS TS
         assertHand(0, "5D,6D,7D,JD,QD");//assert players ending hands, except P3 since still has the last card
-        assertHand(1, "JC,6S,TS,JS"); //JC 6S JS TS
+        assertHand(1, "JC,6S,TS,JS");
         assertHand(3, "5S,8D,KS,QS");
 
 
@@ -1545,7 +1546,9 @@ public class AcceptanceTest {
         TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
         //cant assert this as top card since round is over
 
-        //assert Round ended
+        int[] round1Scores = {-1,21,0,3,39};
+        int[] round2Scores = {-1,38,36,3,75};
+        //assert Round and Game ended
         assertTurn("3");//assert Player 3 is still the Correct Turn since they Won the Game
         for (int i = 0; i < allDrivers.length; i++) {
             List<WebElement> scoreList = allDrivers[i].findElements(By.id("scoreList"));
@@ -1556,13 +1559,17 @@ public class AcceptanceTest {
                 String plyrScore = scoreList.get(i).getText();
                 int plyrScoreNum = Character.getNumericValue(plyrScore.charAt(plyrScore.length() - 1));
 
-                if(scorei == 1){//Player 1, check if their score is correct
+                if(scorei == 1){//Player 1, check if their scores is correct, final and round alone
+                    assertEquals( round2Scores[i], plyrScoreNum - round1Scores[i]);//assert round 2 scores alone is correct
                     assertEquals(59,plyrScoreNum);
                 } else if(scorei == 2){//Player 2, check if their score is correct
+                    assertEquals( round2Scores[i], plyrScoreNum - round1Scores[i]);//assert round 2 scores alone is correct
                     assertEquals(36,plyrScoreNum);
                 } else if(scorei == 3){//Player 3, check if their score is correct
+                    assertEquals( round2Scores[i], plyrScoreNum - round1Scores[i]);//assert round 2 scores alone is correct
                     assertEquals(3,plyrScoreNum);
                 } else if(scorei == 4){//Player 4, check if their score is correct
+                    assertEquals( round2Scores[i], plyrScoreNum - round1Scores[i]);//assert round 2 scores alone is correct
                     assertEquals(114,plyrScoreNum);
                 }
 
