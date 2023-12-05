@@ -97,7 +97,7 @@ public class AcceptanceTest {
 
         verifyDeckCount();
 
-        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+        TimeUnit.SECONDS.sleep(1);//slow down to see gameplay
 
         for (WebDriver playerBrowser : allDrivers) {//check all players windows they display the correct starting top card
             String topCard = playerBrowser.findElement(By.className("topCard")).getAttribute("id");
@@ -105,7 +105,7 @@ public class AcceptanceTest {
         }
 
         allDrivers[0].findElement(By.id("3C")).click();//P1 plays 3C
-        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+        TimeUnit.SECONDS.sleep(1);//slow down to see gameplay
 
         for (int i = 0; i < allDrivers.length; i++) {
 
@@ -138,7 +138,7 @@ public class AcceptanceTest {
 
         verifyDeckCount();
 
-        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+        TimeUnit.SECONDS.sleep(1);//slow down to see gameplay
 
         for (WebDriver playerBrowser : allDrivers) {//check all players windows they display the correct starting top card
             String topCard = playerBrowser.findElement(By.className("topCard")).getAttribute("id");
@@ -148,7 +148,7 @@ public class AcceptanceTest {
 
         String originalDirection = allDrivers[0].findElement(By.id("direction")).getText();//get original direction from p1
         allDrivers[0].findElement(By.id("AH")).click();//P1 plays 3C
-        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+        TimeUnit.SECONDS.sleep(1);//slow down to see gameplay
 
         for (int i = 0; i < allDrivers.length; i++) {
 
@@ -171,7 +171,7 @@ public class AcceptanceTest {
         }
 
         allDrivers[3].findElement(By.id("7H")).click();//P4 plays 7H
-        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+        TimeUnit.SECONDS.sleep(1);//slow down to see gameplay
 
         for (int i = 0; i < allDrivers.length; i++) {
 
@@ -203,7 +203,7 @@ public class AcceptanceTest {
 
         verifyDeckCount();
 
-        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+        TimeUnit.SECONDS.sleep(1);//slow down to see gameplay
 
         for (WebDriver playerBrowser : allDrivers) {//check all players windows they display the correct starting top card
             String topCard = playerBrowser.findElement(By.className("topCard")).getAttribute("id");
@@ -242,7 +242,7 @@ public class AcceptanceTest {
 
         verifyDeckCount();
 
-        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+        TimeUnit.SECONDS.sleep(1);//slow down to see gameplay
 
         for (WebDriver playerBrowser : allDrivers) {//check all players windows they display the correct starting top card
             String topCard = playerBrowser.findElement(By.className("topCard")).getAttribute("id");
@@ -250,7 +250,7 @@ public class AcceptanceTest {
         }
 
         allDrivers[0].findElement(By.id("5C")).click();//P1 plays 5C
-        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+        TimeUnit.SECONDS.sleep(1);//slow down to see gameplay
 
         for (int i = 0; i < allDrivers.length; i++) {
 
@@ -269,7 +269,7 @@ public class AcceptanceTest {
             }
         }
         allDrivers[1].findElement(By.id("6C")).click();//P2 plays 6C
-        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+        TimeUnit.SECONDS.sleep(1);//slow down to see gameplay
 
         for (int i = 0; i < allDrivers.length; i++) {
 
@@ -288,7 +288,7 @@ public class AcceptanceTest {
             }
         }
         allDrivers[2].findElement(By.id("7C")).click();//P3 plays 7C
-        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+        TimeUnit.SECONDS.sleep(1);//slow down to see gameplay
 
         for (int i = 0; i < allDrivers.length; i++) {
 
@@ -307,7 +307,7 @@ public class AcceptanceTest {
             }
         }
         allDrivers[3].findElement(By.id("3C")).click();//P4 plays 3C
-        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+        TimeUnit.SECONDS.sleep(1);//slow down to see gameplay
 
         for (int i = 0; i < allDrivers.length; i++) {
 
@@ -339,7 +339,7 @@ public class AcceptanceTest {
 
         verifyDeckCount();
 
-        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+        TimeUnit.SECONDS.sleep(1);//slow down to see gameplay
 
         for (WebDriver playerBrowser : allDrivers) {//check all players windows they display the correct starting top card
             String topCard = playerBrowser.findElement(By.className("topCard")).getAttribute("id");
@@ -347,7 +347,7 @@ public class AcceptanceTest {
         }
 
         allDrivers[0].findElement(By.id("5H")).click();//P1 plays 5H
-        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+        TimeUnit.SECONDS.sleep(1);//slow down to see gameplay
 
         for (int i = 0; i < allDrivers.length; i++) {
 
@@ -366,7 +366,7 @@ public class AcceptanceTest {
             }
         }
         allDrivers[1].findElement(By.id("6H")).click();//P2 plays 6H
-        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+        TimeUnit.SECONDS.sleep(1);//slow down to see gameplay
 
         for (int i = 0; i < allDrivers.length; i++) {
 
@@ -385,7 +385,7 @@ public class AcceptanceTest {
             }
         }
         allDrivers[2].findElement(By.id("9H")).click();//P3 plays 9H
-        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+        TimeUnit.SECONDS.sleep(1);//slow down to see gameplay
 
         for (int i = 0; i < allDrivers.length; i++) {
 
@@ -405,7 +405,7 @@ public class AcceptanceTest {
         }
         String originalDirection = allDrivers[3].findElement(By.id("direction")).getText();//get original direction from p4
         allDrivers[3].findElement(By.id("AH")).click();//P4 plays AH
-        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+        TimeUnit.SECONDS.sleep(1);//slow down to see gameplay
 
         for (int i = 0; i < allDrivers.length; i++) {
 
@@ -428,7 +428,7 @@ public class AcceptanceTest {
         }
 
         allDrivers[2].findElement(By.id("7H")).click();//P3 plays 7H
-        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+        TimeUnit.SECONDS.sleep(1);//slow down to see gameplay
 
         for (int i = 0; i < allDrivers.length; i++) {
 
@@ -460,7 +460,7 @@ public class AcceptanceTest {
 
         verifyDeckCount();
 
-        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+        TimeUnit.SECONDS.sleep(1);//slow down to see gameplay
 
         for (WebDriver playerBrowser : allDrivers) {//check all players windows they display the correct starting top card
             String topCard = playerBrowser.findElement(By.className("topCard")).getAttribute("id");
@@ -468,7 +468,7 @@ public class AcceptanceTest {
         }
 
         allDrivers[0].findElement(By.id("5C")).click();//P1 plays 5C
-        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+        TimeUnit.SECONDS.sleep(1);//slow down to see gameplay
 
         for (int i = 0; i < allDrivers.length; i++) {
 
@@ -487,7 +487,7 @@ public class AcceptanceTest {
             }
         }
         allDrivers[1].findElement(By.id("6C")).click();//P2 plays 6C
-        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+        TimeUnit.SECONDS.sleep(1);//slow down to see gameplay
 
         for (int i = 0; i < allDrivers.length; i++) {
 
@@ -506,7 +506,7 @@ public class AcceptanceTest {
             }
         }
         allDrivers[2].findElement(By.id("7C")).click();//P3 plays 7C
-        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+        TimeUnit.SECONDS.sleep(1);//slow down to see gameplay
 
         for (int i = 0; i < allDrivers.length; i++) {
 
@@ -526,7 +526,7 @@ public class AcceptanceTest {
         }
 
         allDrivers[3].findElement(By.id("QC")).click();//P4 plays QC
-        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+        TimeUnit.SECONDS.sleep(1);//slow down to see gameplay
 
         for (int i = 0; i < allDrivers.length; i++) {
 
@@ -558,7 +558,7 @@ public class AcceptanceTest {
 
         verifyDeckCount();
 
-        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+        TimeUnit.SECONDS.sleep(1);//slow down to see gameplay
 
         for (WebDriver playerBrowser : allDrivers) {//check all players windows they display the correct starting top card
             String topCard = playerBrowser.findElement(By.className("topCard")).getAttribute("id");
@@ -566,7 +566,7 @@ public class AcceptanceTest {
         }
 
         allDrivers[0].findElement(By.id("KH")).click();//P1 plays KH
-        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+        TimeUnit.SECONDS.sleep(1);//slow down to see gameplay
 
         for (int i = 0; i < allDrivers.length; i++) {
 
@@ -590,7 +590,7 @@ public class AcceptanceTest {
 
         verifyDeckCount();
 
-        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+        TimeUnit.SECONDS.sleep(1);//slow down to see gameplay
 
         for (WebDriver playerBrowser : allDrivers) {//check all players windows they display the correct starting top card
             String topCard = playerBrowser.findElement(By.className("topCard")).getAttribute("id");
@@ -598,7 +598,7 @@ public class AcceptanceTest {
         }
 
         allDrivers[0].findElement(By.id("7C")).click();//P1 plays 7C
-        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+        TimeUnit.SECONDS.sleep(1);//slow down to see gameplay
 
         for (int i = 0; i < allDrivers.length; i++) {
 
@@ -622,7 +622,7 @@ public class AcceptanceTest {
 
         verifyDeckCount();
 
-        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+        TimeUnit.SECONDS.sleep(1);//slow down to see gameplay
 
         for (WebDriver playerBrowser : allDrivers) {//check all players windows they display the correct starting top card
             String topCard = playerBrowser.findElement(By.className("topCard")).getAttribute("id");
@@ -630,7 +630,7 @@ public class AcceptanceTest {
         }
 
         allDrivers[0].findElement(By.id("8H")).click();//P1 plays 8H
-        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+        TimeUnit.SECONDS.sleep(1);//slow down to see gameplay
 
         for (int i = 0; i < allDrivers.length; i++) {
 
@@ -668,7 +668,7 @@ public class AcceptanceTest {
 
         verifyDeckCount();
 
-        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+        TimeUnit.SECONDS.sleep(1);//slow down to see gameplay
 
         for (WebDriver playerBrowser : allDrivers) {//check all players windows they display the correct starting top card
             String topCard = playerBrowser.findElement(By.className("topCard")).getAttribute("id");
@@ -676,7 +676,7 @@ public class AcceptanceTest {
         }
 
         allDrivers[0].findElement(By.id("5S")).click();//P1 tries to play 5S
-        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+        TimeUnit.SECONDS.sleep(1);//slow down to see gameplay
 
         for (int i = 0; i < allDrivers.length; i++) {
             WebDriverWait waitAlert = new WebDriverWait(allDrivers[i], Duration.ofSeconds(1));
@@ -722,7 +722,7 @@ public class AcceptanceTest {
 
         verifyDeckCount();
 
-        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+        TimeUnit.SECONDS.sleep(1);//slow down to see gameplay
 
         assertTopCard("3D");//check all players windows they display the correct top card for the start of the scenario
 
@@ -731,7 +731,7 @@ public class AcceptanceTest {
             for (WebDriver currPlayer : allDrivers) {
                 List<WebElement> plyrHand = currPlayer.findElement(By.id("hand")).findElements(By.className("card"));
                 plyrHand.get(0).click();
-                TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+                TimeUnit.SECONDS.sleep(1);//slow down to see gameplay
             }
         }
 
@@ -740,7 +740,7 @@ public class AcceptanceTest {
         assertDrawnCard(0,"6C",true);//assert playable drawn card is in hand, the only one enabled, and draw button is disabled
 
         allDrivers[0].findElement(By.id("6C")).click();//P1 had to play 6C
-        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+        TimeUnit.SECONDS.sleep(1);//slow down to see gameplay
 
         assertTopCard("6C");//check all players windows they display the correct top card after it was played
     }
@@ -756,7 +756,7 @@ public class AcceptanceTest {
 
         verifyDeckCount();
 
-        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+        TimeUnit.SECONDS.sleep(1);//slow down to see gameplay
 
         assertTopCard("3D");//check all players windows they display the correct starting top card
 
@@ -765,7 +765,7 @@ public class AcceptanceTest {
             for (WebDriver currPlayer : allDrivers) {
                 List<WebElement> plyrHand = currPlayer.findElement(By.id("hand")).findElements(By.className("card"));
                 plyrHand.get(0).click();
-                TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+                TimeUnit.SECONDS.sleep(1);//slow down to see gameplay
             }
         }
 
@@ -776,7 +776,7 @@ public class AcceptanceTest {
         assertDrawnCard(0,"5C",true);//assert playable drawn card is in hand, the only one enabled, and draw button is disabled
 
         allDrivers[0].findElement(By.id("5C")).click();//P1 had to play 6C
-        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+        TimeUnit.SECONDS.sleep(1);//slow down to see gameplay
 
         assertTopCard("5C");//check all players windows they display the correct top card after it was played
     }
@@ -792,7 +792,7 @@ public class AcceptanceTest {
 
         verifyDeckCount();
 
-        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+        TimeUnit.SECONDS.sleep(1);//slow down to see gameplay
 
         assertTopCard("3D");//check all players windows they display the correct starting top card
 
@@ -801,7 +801,7 @@ public class AcceptanceTest {
             for (WebDriver currPlayer : allDrivers) {
                 List<WebElement> plyrHand = currPlayer.findElement(By.id("hand")).findElements(By.className("card"));
                 plyrHand.get(0).click();
-                TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+                TimeUnit.SECONDS.sleep(1);//slow down to see gameplay
             }
         }
 
@@ -814,7 +814,7 @@ public class AcceptanceTest {
         assertDrawnCard(0,"7H",true);//assert playable drawn card is in hand, the only one enabled, and draw button is disabled
 
         allDrivers[0].findElement(By.id("7H")).click();//P1 had to play 7H
-        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+        TimeUnit.SECONDS.sleep(1);//slow down to see gameplay
 
         assertTopCard("7H");//check all players windows they display the correct top card after it was played
     }
@@ -830,7 +830,7 @@ public class AcceptanceTest {
 
         verifyDeckCount();
 
-        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+        TimeUnit.SECONDS.sleep(1);//slow down to see gameplay
 
         assertTopCard("3D");//check all players windows they display the correct starting top card
 
@@ -839,7 +839,7 @@ public class AcceptanceTest {
             for (WebDriver currPlayer : allDrivers) {
                 List<WebElement> plyrHand = currPlayer.findElement(By.id("hand")).findElements(By.className("card"));
                 plyrHand.get(0).click();
-                TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+                TimeUnit.SECONDS.sleep(1);//slow down to see gameplay
             }
         }
         String savedTopCard = allDrivers[0].findElement(By.className("topCard")).getAttribute("id");
@@ -852,7 +852,7 @@ public class AcceptanceTest {
         assertTurn("1");//used the manual code since we drawbtn will be disabled since end of turn, instead of enabled since its still a non playable card
         allDrivers[0].findElement(By.id("draw")).click();
         assertNotNull(allDrivers[0].findElement(By.id("hand")).findElement(By.id("4H")));//assert the card is in player's hand
-        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+        TimeUnit.SECONDS.sleep(1);//slow down to see gameplay
 
         assertTurn("2");//assert current turn is the next player
         assertTopCard("7C");//check all players windows the top card is the same
@@ -870,7 +870,7 @@ public class AcceptanceTest {
 
         verifyDeckCount();
 
-        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+        TimeUnit.SECONDS.sleep(1);//slow down to see gameplay
 
         assertTopCard("3D");//check all players windows they display the correct starting top card
 
@@ -879,7 +879,7 @@ public class AcceptanceTest {
             for (WebDriver currPlayer : allDrivers) {
                 List<WebElement> plyrHand = currPlayer.findElement(By.id("hand")).findElements(By.className("card"));
                 plyrHand.get(0).click();
-                TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+                TimeUnit.SECONDS.sleep(1);//slow down to see gameplay
             }
         }
 
@@ -889,12 +889,12 @@ public class AcceptanceTest {
         assertDrawnCard(0,"8H",true);//assert playable drawn card is in hand, the only one enabled, and draw button is disabled
 
         allDrivers[0].findElement(By.id("8H")).click();//P1 had to play 8H
-        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+        TimeUnit.SECONDS.sleep(1);//slow down to see gameplay
         assertTopCard("8H");//check all players windows they display the correct top card after it was played
 
         assert8PlayedBtns(0);//assert only Player 1 has the suit buttons when 8 was played
         allDrivers[0].findElement(By.id("diamond")).click();//declare a suit
-        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+        TimeUnit.SECONDS.sleep(1);//slow down to see gameplay
         assertTopCard("D");//assert the correct suit was set as a top card
     }
     @Test
@@ -909,7 +909,7 @@ public class AcceptanceTest {
 
         verifyDeckCount();
 
-        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+        TimeUnit.SECONDS.sleep(1);//slow down to see gameplay
 
         assertTopCard("3D");//check all players windows they display the correct top card for the start of the scenario
 
@@ -918,7 +918,7 @@ public class AcceptanceTest {
             for (WebDriver currPlayer : allDrivers) {
                 List<WebElement> plyrHand = currPlayer.findElement(By.id("hand")).findElements(By.className("card"));
                 plyrHand.get(0).click();
-                TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+                TimeUnit.SECONDS.sleep(1);//slow down to see gameplay
             }
         }
 
@@ -928,7 +928,7 @@ public class AcceptanceTest {
         assertDrawnCard(0,"6C",true);//assert playable drawn card is in hand, the only one enabled, and draw button is disabled
 
         allDrivers[0].findElement(By.id("6C")).click();//P1 had to play 6C
-        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+        TimeUnit.SECONDS.sleep(1);//slow down to see gameplay
 
         assertTopCard("6C");//check all players windows they display the correct top card after it was played
     }
@@ -944,7 +944,7 @@ public class AcceptanceTest {
 
         verifyDeckCount();
 
-        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+        TimeUnit.SECONDS.sleep(1);//slow down to see gameplay
 
         assertTopCard("3D");//check all players windows they display the correct top card for the start of the scenario
 
@@ -955,33 +955,33 @@ public class AcceptanceTest {
                 String plyrCardPlayed = plyrHand.get(0).getAttribute("id");
                 plyrHand.get(0).click();
                 assertTopCard(plyrCardPlayed);//asserts each card played is the new top card
-                TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+                TimeUnit.SECONDS.sleep(1);//slow down to see gameplay
             }
         }
 
         allDrivers[1].findElement(By.id("5S")).click();//P2 Plays 5S since P1 was skipped
-        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+        TimeUnit.SECONDS.sleep(1);//slow down to see gameplay
         assertTopCard("5S");//check all players windows they display the correct top card for the start of the scenario
 
         allDrivers[2].findElement(By.id("9S")).click();//P3 Plays 9S
-        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+        TimeUnit.SECONDS.sleep(1);//slow down to see gameplay
         assertTopCard("9S");//check all players windows they display the correct top card for the start of the scenario
 
         allDrivers[3].findElement(By.id("9C")).click();//P4 Plays 9C
-        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+        TimeUnit.SECONDS.sleep(1);//slow down to see gameplay
         assertTopCard("9C");//check all players windows they display the correct top card for the start of the scenario
 
         allDrivers[0].findElement(By.id("2C")).click();//P1 Plays 2C so itll be the topCard after P4 played
-        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+        TimeUnit.SECONDS.sleep(1);//slow down to see gameplay
         assertTopCard("2C");//check all players windows they display the correct top card for the start of the scenario
 
         //2C was played so assert P2 received the correct cards
         assertOnlyDrawn(1,"6C");//P2 draw card and assert drawn card is in hand
         assertOnlyDrawn(1,"9D");//P2 draw card and assert drawn card is in hand
-        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+        TimeUnit.SECONDS.sleep(1);//slow down to see gameplay
 
         allDrivers[1].findElement(By.id("6C")).click();//P2 plays 6C
-        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+        TimeUnit.SECONDS.sleep(1);//slow down to see gameplay
 
         assertTopCard("6C");//check all players windows they display the correct top card after it was played
     }
@@ -997,7 +997,7 @@ public class AcceptanceTest {
 
         verifyDeckCount();
 
-        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+        TimeUnit.SECONDS.sleep(1);//slow down to see gameplay
 
         assertTopCard("3D");//check all players windows they display the correct top card for the start of the scenario
 
@@ -1008,24 +1008,24 @@ public class AcceptanceTest {
                 String plyrCardPlayed = plyrHand.get(0).getAttribute("id");
                 plyrHand.get(0).click();
                 assertTopCard(plyrCardPlayed);//asserts each card played is the new top card
-                TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+                TimeUnit.SECONDS.sleep(1);//slow down to see gameplay
             }
         }
 
         allDrivers[1].findElement(By.id("5S")).click();//P2 Plays 5S since P1 was skipped
-        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+        TimeUnit.SECONDS.sleep(1);//slow down to see gameplay
         assertTopCard("5S");//check all players windows they display the correct top card for the start of the scenario
 
         allDrivers[2].findElement(By.id("9S")).click();//P3 Plays 9S
-        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+        TimeUnit.SECONDS.sleep(1);//slow down to see gameplay
         assertTopCard("9S");//check all players windows they display the correct top card for the start of the scenario
 
         allDrivers[3].findElement(By.id("9C")).click();//P4 Plays 9C
-        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+        TimeUnit.SECONDS.sleep(1);//slow down to see gameplay
         assertTopCard("9C");//check all players windows they display the correct top card for the start of the scenario
 
         allDrivers[0].findElement(By.id("2C")).click();//P1 Plays 2C so itll be the topCard after P4 played
-        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+        TimeUnit.SECONDS.sleep(1);//slow down to see gameplay
         assertTopCard("2C");//check all players windows they display the correct top card for the start of the scenario
 
         //2C was played so assert P2 received the correct cards
@@ -1047,15 +1047,15 @@ public class AcceptanceTest {
             assertNotNull(invalidCard);
             assertEquals("Invalid Selection",invalidCard.getText());
             invalidCard.dismiss();
-            TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+            TimeUnit.SECONDS.sleep(1);//slow down to see gameplay
         }
 
         assertDrawnCard(1,"9H",false);//P2 draw card and assert drawn card is in hand
         assertDrawnCard(1,"6C",true);//P2 draw card and assert is the only enabled card
-        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+        TimeUnit.SECONDS.sleep(1);//slow down to see gameplay
 
         allDrivers[1].findElement(By.id("6C")).click();//P2 plays 6C
-        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+        TimeUnit.SECONDS.sleep(1);//slow down to see gameplay
         assertTopCard("6C");//check all players windows they display the correct top card after it was played
     }
     @Test
@@ -1070,7 +1070,7 @@ public class AcceptanceTest {
 
         verifyDeckCount();
 
-        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+        TimeUnit.SECONDS.sleep(1);//slow down to see gameplay
 
         assertTopCard("3D");//check all players windows they display the correct top card for the start of the scenario
 
@@ -1081,24 +1081,24 @@ public class AcceptanceTest {
                 String plyrCardPlayed = plyrHand.get(0).getAttribute("id");
                 plyrHand.get(0).click();
                 assertTopCard(plyrCardPlayed);//asserts each card played is the new top card
-                TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+                TimeUnit.SECONDS.sleep(1);//slow down to see gameplay
             }
         }
 
         allDrivers[1].findElement(By.id("5S")).click();//P2 Plays 5S since P1 was skipped
-        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+        TimeUnit.SECONDS.sleep(1);//slow down to see gameplay
         assertTopCard("5S");//check all players windows they display the correct top card for the start of the scenario
 
         allDrivers[2].findElement(By.id("9S")).click();//P3 Plays 9S
-        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+        TimeUnit.SECONDS.sleep(1);//slow down to see gameplay
         assertTopCard("9S");//check all players windows they display the correct top card for the start of the scenario
 
         allDrivers[3].findElement(By.id("9C")).click();//P4 Plays 9C
-        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+        TimeUnit.SECONDS.sleep(1);//slow down to see gameplay
         assertTopCard("9C");//check all players windows they display the correct top card for the start of the scenario
 
         allDrivers[0].findElement(By.id("2C")).click();//P1 Plays 2C so itll be the topCard after P4 played
-        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+        TimeUnit.SECONDS.sleep(1);//slow down to see gameplay
         assertTopCard("2C");//check all players windows they display the correct top card for the start of the scenario
         String savedTopCard = allDrivers[0].findElement(By.className("topCard")).getAttribute("id");
 
@@ -1113,7 +1113,7 @@ public class AcceptanceTest {
         assertTurn("2");//used the manual code since we drawbtn will be disabled since end of turn, instead of enabled since its still a non playable card
         allDrivers[1].findElement(By.id("draw")).click();
         assertNotNull(allDrivers[1].findElement(By.id("hand")).findElement(By.id("5H")));//assert the card is in player 2's hand
-        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+        TimeUnit.SECONDS.sleep(1);//slow down to see gameplay
 
         assertTurn("3");//assert current turn is the next player since P2 couldn't play a card
         assertTopCard("2C");//check all players windows the top card is the same
@@ -1132,7 +1132,7 @@ public class AcceptanceTest {
 
         verifyDeckCount();
 
-        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+        TimeUnit.SECONDS.sleep(1);//slow down to see gameplay
 
         assertTopCard("3D");//check all players windows they display the correct top card for the start of the scenario
 
@@ -1143,33 +1143,33 @@ public class AcceptanceTest {
                 String plyrCardPlayed = plyrHand.get(0).getAttribute("id");
                 plyrHand.get(0).click();
                 assertTopCard(plyrCardPlayed);//asserts each card played is the new top card
-                TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+                TimeUnit.SECONDS.sleep(1);//slow down to see gameplay
             }
         }
 
         allDrivers[1].findElement(By.id("7S")).click();//P2 Plays 7S since P1 was skipped
-        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+        TimeUnit.SECONDS.sleep(1);//slow down to see gameplay
         assertTopCard("7S");//check all players windows they display the correct top card for the start of the scenario
 
         allDrivers[2].findElement(By.id("9S")).click();//P3 Plays 9S
-        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+        TimeUnit.SECONDS.sleep(1);//slow down to see gameplay
         assertTopCard("9S");//check all players windows they display the correct top card for the start of the scenario
 
         allDrivers[3].findElement(By.id("9C")).click();//P4 Plays 9C
-        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+        TimeUnit.SECONDS.sleep(1);//slow down to see gameplay
         assertTopCard("9C");//check all players windows they display the correct top card for the start of the scenario
 
         allDrivers[0].findElement(By.id("2C")).click();//P1 Plays 2C so itll be the topCard after P4 played
-        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+        TimeUnit.SECONDS.sleep(1);//slow down to see gameplay
         assertTopCard("2C");//check all players windows they display the correct top card for the start of the scenario
 
         //2C was played so assert P2 received the correct cards
         assertOnlyDrawn(1,"2H");//P2 draw card and assert drawn card is in hand
         assertOnlyDrawn(1,"9D");//P2 draw card and assert drawn card is in hand
-        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+        TimeUnit.SECONDS.sleep(1);//slow down to see gameplay
 
         allDrivers[1].findElement(By.id("2H")).click();//P2 plays 2H
-        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+        TimeUnit.SECONDS.sleep(1);//slow down to see gameplay
         assertTopCard("2H");//check all players windows they display the correct top card after it was played
 
         //2H was played so assert P3 received the correct cards
@@ -1177,10 +1177,10 @@ public class AcceptanceTest {
         assertOnlyDrawn(2,"6D");//P3 draw card and assert drawn card is in hand
         assertOnlyDrawn(2,"6H");//P3 draw card and assert drawn card is in hand
         assertOnlyDrawn(2,"7C");//P3 draw card and assert drawn card is in hand
-        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+        TimeUnit.SECONDS.sleep(1);//slow down to see gameplay
 
         allDrivers[2].findElement(By.id("6H")).click();//P3 plays 6H
-        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+        TimeUnit.SECONDS.sleep(1);//slow down to see gameplay
         assertTopCard("6H");//check all players windows they display the correct top card after it was played
     }
     @Test
@@ -1195,7 +1195,7 @@ public class AcceptanceTest {
 
         verifyDeckCount();
 
-        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+        TimeUnit.SECONDS.sleep(1);//slow down to see gameplay
 
         assertTopCard("3D");//check all players windows they display the correct top card for the start of the scenario
 
@@ -1206,33 +1206,33 @@ public class AcceptanceTest {
                 String plyrCardPlayed = plyrHand.get(0).getAttribute("id");
                 plyrHand.get(0).click();
                 assertTopCard(plyrCardPlayed);//asserts each card played is the new top card
-                TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+                TimeUnit.SECONDS.sleep(1);//slow down to see gameplay
             }
         }
 
         allDrivers[0].findElement(By.id("7C")).click();//P1 Plays 7C
-        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+        TimeUnit.SECONDS.sleep(1);//slow down to see gameplay
         assertTopCard("7C");//check all players windows they display the correct top card for the start of the scenario
 
         allDrivers[1].findElement(By.id("5C")).click();//P2 Plays 5C
-        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+        TimeUnit.SECONDS.sleep(1);//slow down to see gameplay
         assertTopCard("5C");//check all players windows they display the correct top card for the start of the scenario
 
         allDrivers[2].findElement(By.id("QC")).click();//P3 Plays QC
-        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+        TimeUnit.SECONDS.sleep(1);//slow down to see gameplay
         assertTopCard("QC");//check all players windows they display the correct top card for the start of the scenario
 
         allDrivers[0].findElement(By.id("2C")).click();//P1 Plays 2C so itll be the topCard since P4 is skipped
-        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+        TimeUnit.SECONDS.sleep(1);//slow down to see gameplay
         assertTopCard("2C");//check all players windows they display the correct top card for the start of the scenario
 
         /////////////////////////////////P2 Plays 2 cards consecutively///////////////////////////
         allDrivers[1].findElement(By.id("4C")).click();//P2 Plays 4C
-        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+        TimeUnit.SECONDS.sleep(1);//slow down to see gameplay
         assertTopCard("4C");//check all players windows they display the correct top card for the start of the scenario
 
         allDrivers[1].findElement(By.id("6C")).click();//P2 Plays 6C
-        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+        TimeUnit.SECONDS.sleep(1);//slow down to see gameplay
         assertTopCard("6C");//check all players windows they display the correct top card for the start of the scenario
 
         assertTurn("3");//assert the next correct player is displayed
@@ -1249,7 +1249,7 @@ public class AcceptanceTest {
 
         verifyDeckCount();
 
-        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+        TimeUnit.SECONDS.sleep(1);//slow down to see gameplay
 
         assertTopCard("3D");//check all players windows they display the correct top card for the start of the scenario
 
@@ -1260,33 +1260,33 @@ public class AcceptanceTest {
                 String plyrCardPlayed = plyrHand.get(0).getAttribute("id");
                 plyrHand.get(0).click();
                 assertTopCard(plyrCardPlayed);//asserts each card played is the new top card
-                TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+                TimeUnit.SECONDS.sleep(1);//slow down to see gameplay
             }
         }
 
         allDrivers[0].findElement(By.id("TC")).click();//P1 Plays TC
-        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+        TimeUnit.SECONDS.sleep(1);//slow down to see gameplay
         assertTopCard("TC");//check all players windows they display the correct top card for the start of the scenario
 
         allDrivers[1].findElement(By.id("9C")).click();//P2 Plays 9C
-        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+        TimeUnit.SECONDS.sleep(1);//slow down to see gameplay
         assertTopCard("9C");//check all players windows they display the correct top card for the start of the scenario
 
         allDrivers[2].findElement(By.id("QC")).click();//P3 Plays QC
-        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+        TimeUnit.SECONDS.sleep(1);//slow down to see gameplay
         assertTopCard("QC");//check all players windows they display the correct top card for the start of the scenario
 
         allDrivers[0].findElement(By.id("2C")).click();//P1 Plays 2C so itll be the topCard since P4 is skipped
-        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+        TimeUnit.SECONDS.sleep(1);//slow down to see gameplay
         assertTopCard("2C");//check all players windows they display the correct top card for the start of the scenario
 
         /////////////////////////////////P2 Plays 2 cards consecutively///////////////////////////
         allDrivers[1].findElement(By.id("4C")).click();//P2 Plays 4C
-        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+        TimeUnit.SECONDS.sleep(1);//slow down to see gameplay
         assertTopCard("4C");//check all players windows they display the correct top card for the start of the scenario
 
         allDrivers[1].findElement(By.id("4S")).click();//P2 Plays 4S
-        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+        TimeUnit.SECONDS.sleep(1);//slow down to see gameplay
         //cant assert this as top card since round is over
 
         //assert Round ended
@@ -1331,7 +1331,7 @@ public class AcceptanceTest {
 
         verifyDeckCount();
 
-        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+        TimeUnit.SECONDS.sleep(1);//slow down to see gameplay
 
         assertTopCard("3H");//check all players windows they display the correct top card for the start of the scenario
 
@@ -1342,16 +1342,16 @@ public class AcceptanceTest {
                 String plyrCardPlayed = plyrHand.get(0).getAttribute("id");
                 plyrHand.get(0).click();
                 assertTopCard(plyrCardPlayed);//asserts each card played is the new top card
-                TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+                TimeUnit.SECONDS.sleep(1);//slow down to see gameplay
             }
         }
 
         allDrivers[0].findElement(By.id("4C")).click();//P1 Plays 4C
-        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+        TimeUnit.SECONDS.sleep(1);//slow down to see gameplay
         assertTopCard("4C");//check all players windows they display the correct top card for the start of the scenario
 
         allDrivers[1].findElement(By.id("JC")).click();//P2 Plays JC
-        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+        TimeUnit.SECONDS.sleep(1);//slow down to see gameplay
         assertTopCard("JC");//check all players windows they display the correct top card for the start of the scenario
 
         //chooses to draw KH,KS,KC
@@ -1359,21 +1359,21 @@ public class AcceptanceTest {
         assertDrawnCard(2,"KS",false);
         assertDrawnCard(2,"KC",true);
         allDrivers[2].findElement(By.id("KC")).click();//P3 Plays KC
-        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+        TimeUnit.SECONDS.sleep(1);//slow down to see gameplay
         assertTopCard("KC");//check all players windows they display the correct top card for the start of the scenario
 
         assertDrawnCard(3,"9C",true);
         allDrivers[3].findElement(By.id("9C")).click();//P4 Plays 9C
-        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+        TimeUnit.SECONDS.sleep(1);//slow down to see gameplay
         assertTopCard("9C");//check all players windows they display the correct top card for the start of the scenario
 
         allDrivers[0].findElement(By.id("2C")).click();//P1 Plays 2C so itll be the topCard since P4 is skipped
-        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+        TimeUnit.SECONDS.sleep(1);//slow down to see gameplay
         assertTopCard("2C");//check all players windows they display the correct top card for the start of the scenario
 
         /////////////////////////////////P2 Plays 2 cards consecutively and ends the game///////////////////////////
         allDrivers[1].findElement(By.id("5C")).click();//P2 Plays 5C
-        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+        TimeUnit.SECONDS.sleep(1);//slow down to see gameplay
         assertTopCard("5C");//check all players windows they display the correct top card for the start of the scenario
 
         //can only assert ending hands before the last card is played here. Since hands are not displayed anymore after that.
@@ -1383,7 +1383,7 @@ public class AcceptanceTest {
         assertTurn("2");//assert it's still Player 2's turn to be able to play the last card to end the game
 
         allDrivers[1].findElement(By.id("TC")).click();//P2 Plays TC
-        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+        TimeUnit.SECONDS.sleep(1);//slow down to see gameplay
         //cant assert this as top card since game is over
 
         //assert Round ended
@@ -1422,7 +1422,7 @@ public class AcceptanceTest {
 
         verifyDeckCount();
 
-        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+        TimeUnit.SECONDS.sleep(1);//slow down to see gameplay
         assertTopCard("4D");//assert initial top card for round 1
 
         playAndAssertCard(0,"4H");//P1 Plays 4H
@@ -1433,7 +1433,7 @@ public class AcceptanceTest {
         assertDrawnCard(3,"3C",false);//P4 draws 3C
         allDrivers[3].findElement(By.id("draw")).click();//P4 draws 4C and turn ends since not playable
         assertOnlyDrawn(3,"4C");
-        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+        TimeUnit.SECONDS.sleep(1);//slow down to see gameplay
 
 
         playAndAssertCard(0,"7S");//P1 Plays 7S
@@ -1454,7 +1454,7 @@ public class AcceptanceTest {
         playAndAssertCard(0,"7C");//P1 Plays 7C
         playAndAssertCard(1,"8H");//P2 Plays 8H
         allDrivers[1].findElement(By.id("diamond")).click();//declare a suit
-        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+        TimeUnit.SECONDS.sleep(1);//slow down to see gameplay
         assertTopCard("D");//assert the correct suit was set as a top card
 
         playAndAssertCard(2,"JD");//P3 Plays JD
@@ -1466,7 +1466,7 @@ public class AcceptanceTest {
         assertHand(3, "JH,QH,KH,5C,4C");
 
         allDrivers[1].findElement(By.id("TD")).click();//P2 Plays TD
-        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+        TimeUnit.SECONDS.sleep(1);//slow down to see gameplay
         //cant assert this as top card since round is over
 
         //assert Round ended
@@ -1497,7 +1497,7 @@ public class AcceptanceTest {
 
         verifyDeckCount();
 
-        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+        TimeUnit.SECONDS.sleep(1);//slow down to see gameplay
         assertTopCard("TD");//assert initial top card for round 2
 
         playAndAssertCard(1,"9D");//P2 Plays 9D
@@ -1527,13 +1527,13 @@ public class AcceptanceTest {
         assertDrawnCard(0,"QD",false);//P1 draws QD
         allDrivers[0].findElement(By.id("draw")).click();//P1 draws JD and turn ends since not playable
         assertOnlyDrawn(0,"JD");
-        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+        TimeUnit.SECONDS.sleep(1);//slow down to see gameplay
 
         assertDrawnCard(1,"6S",false);//P2 draws 6S
         assertDrawnCard(1,"JS",false);//P2 draws JS
         allDrivers[1].findElement(By.id("draw")).click();//P2 draws TS and turn ends since not playable
         assertOnlyDrawn(1,"TS");
-        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+        TimeUnit.SECONDS.sleep(1);//slow down to see gameplay
 
         //7D 5D 6D QD JD
         //JC 6S JS TS
@@ -1543,7 +1543,7 @@ public class AcceptanceTest {
 
 
         allDrivers[2].findElement(By.id("5H")).click();//P3 Plays 5H
-        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+        TimeUnit.SECONDS.sleep(1);//slow down to see gameplay
         //cant assert this as top card since round is over
 
         int[] round1Scores = {-1,21,0,3,39};
@@ -2173,7 +2173,7 @@ public class AcceptanceTest {
                 assertTrue(drawBtn.isEnabled());
                 drawBtn.click();
                 assertNotNull(allDrivers[plyrIndex].findElement(By.id("hand")).findElement(By.id(card)));//assert the card is in player's hand
-                TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+                TimeUnit.SECONDS.sleep(1);//slow down to see gameplay
             }//assert only that player's draw button is enabled and in hand
             else {
                 assertFalse(drawBtn.isEnabled());
@@ -2255,7 +2255,7 @@ public class AcceptanceTest {
     }
     public void playAndAssertCard(int plyrIndex, String card) throws InterruptedException {
         allDrivers[plyrIndex].findElement(By.id(card)).click();//Player Plays this card
-        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+        TimeUnit.SECONDS.sleep(1);//slow down to see gameplay
         assertTopCard(card);
     }
 
