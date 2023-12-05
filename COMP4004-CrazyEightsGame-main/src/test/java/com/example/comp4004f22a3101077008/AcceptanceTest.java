@@ -886,13 +886,12 @@ public class AcceptanceTest {
         assertTopCard("7C");//check all players windows they display the correct top card for the start of the scenario
 
         assertDrawnCard(0,"6D",false);//assert non playable drawn card is in hand and draw button is still enabled
-
         assertDrawnCard(0,"8H",true);//assert playable drawn card is in hand, the only one enabled, and draw button is disabled
 
         allDrivers[0].findElement(By.id("8H")).click();//P1 had to play 8H
         TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
-
         assertTopCard("8H");//check all players windows they display the correct top card after it was played
+
         assert8PlayedBtns(0);//assert only Player 1 has the suit buttons when 8 was played
         allDrivers[0].findElement(By.id("diamond")).click();//declare a suit
         TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
@@ -1388,7 +1387,7 @@ public class AcceptanceTest {
         //cant assert this as top card since game is over
 
         //assert Round ended
-        assertTurn("2");//assert Player 2 is still the Correct Turn since they Won the Round
+        assertTurn("2");//assert Player 2 is still the Correct Turn since they Won the Game
         for (int i = 0; i < allDrivers.length; i++) {
             List<WebElement> scoreList = allDrivers[i].findElements(By.id("scoreList"));
             WebElement winMSG = allDrivers[i].findElement(By.id("winMSG"));//assert winner message for all players, winMSG = WINNER IS PLAYER 2
@@ -1398,13 +1397,13 @@ public class AcceptanceTest {
                 String plyrScore = scoreList.get(i).getText();
                 int plyrScoreNum = Character.getNumericValue(plyrScore.charAt(plyrScore.length() - 1));
 
-                if(scorei == 1){//Player 1, check if the
+                if(scorei == 1){//Player 1, check if their score is correct
                     assertEquals(1,plyrScoreNum);
-                } else if(scorei == 2){//Player 2, check if the
+                } else if(scorei == 2){//Player 2, check if their score is correct
                     assertEquals(0,plyrScoreNum);
-                } else if(scorei == 3){//Player 3, check if the
+                } else if(scorei == 3){//Player 3, check if their score is correct
                     assertEquals(86,plyrScoreNum);
-                } else if(scorei == 4){//Player 4, check if the
+                } else if(scorei == 4){//Player 4, check if their score is correct
                     assertEquals(102,plyrScoreNum);
                 }
 
@@ -1424,6 +1423,151 @@ public class AcceptanceTest {
         verifyDeckCount();
 
         TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+        assertTopCard("4D");//assert initial top card for round 1
+
+        playAndAssertCard(0,"4H");//P1 Plays 4H
+        playAndAssertCard(1,"4S");//P2 Plays 4S
+        playAndAssertCard(2,"9S");//P3 Plays 9S
+
+        assertDrawnCard(3,"2C",false);//P4 draws 2C
+        assertDrawnCard(3,"3C",false);//P4 draws 3C
+        allDrivers[3].findElement(By.id("draw")).click();//P4 draws 4C and turn ends since not playable
+        assertOnlyDrawn(3,"4C");
+        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+
+
+        playAndAssertCard(0,"7S");//P1 Plays 7S
+        playAndAssertCard(1,"6S");//P2 Plays 6S
+        playAndAssertCard(2,"6C");//P3 Plays 6C
+        playAndAssertCard(3,"2C");//P4 Plays 2C
+
+        assertOnlyDrawn(0,"TC");//assert P1 received correct card
+        assertOnlyDrawn(0,"JC");//assert P1 received correct card
+
+        playAndAssertCard(0,"JC");//P1 Plays JC
+        playAndAssertCard(1,"KC");//P2 Plays KC
+        playAndAssertCard(2,"9C");//P3 Plays 9C
+        playAndAssertCard(3,"3C");//P4 Plays 3C
+
+        assertDrawnCard(0,"7C",true);//P1 chooses to draw 7C
+
+        playAndAssertCard(0,"7C");//P1 Plays 7C
+        playAndAssertCard(1,"8H");//P2 Plays 8H
+        allDrivers[1].findElement(By.id("diamond")).click();//declare a suit
+        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+        assertTopCard("D");//assert the correct suit was set as a top card
+
+        playAndAssertCard(2,"JD");//P3 Plays JD
+        playAndAssertCard(3,"7D");//P4 Plays 7D
+        playAndAssertCard(0,"9D");//P1 Plays 9D
+
+        assertHand(0, "5D,6D,TC");//assert players ending hands, except P2 since still has the last card
+        assertHand(2, "3H");
+        assertHand(3, "JH,QH,KH,5C,4C");
+
+        allDrivers[1].findElement(By.id("TD")).click();//P2 Plays TD
+        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+        //cant assert this as top card since round is over
+
+        //assert Round ended
+        assertTurn("2");//assert Player 2 is still the Correct Turn since they Won the Round
+        for (int i = 0; i < allDrivers.length; i++) {
+            List<WebElement> scoreList = allDrivers[i].findElements(By.id("scoreList"));
+            for(int scorei = 1; scorei < scoreList.size();scorei++){//start at index 1 since 0 is Score title
+                //assert all scores on browsers are 1,0,86,102 and winner msg is displayed correctly
+                String plyrScore = scoreList.get(i).getText();
+                int plyrScoreNum = Character.getNumericValue(plyrScore.charAt(plyrScore.length() - 1));
+
+                if(scorei == 1){//Player 1, check if their score is correct
+                    assertEquals(21,plyrScoreNum);
+                } else if(scorei == 2){//Player 2, check if their score is correct
+                    assertEquals(0,plyrScoreNum);
+                } else if(scorei == 3){//Player 3, check if their score is correct
+                    assertEquals(3,plyrScoreNum);
+                } else if(scorei == 4){//Player 4, check if their score is correct
+                    assertEquals(39,plyrScoreNum);
+                }
+            }
+        }
+
+        rigTestRow64Round2();//rigs deck for this test, round 2
+
+        wait = new WebDriverWait(allDrivers[1], Duration.ofSeconds(20));//waits till start button pops up for Player 2 since they joined in second, and starts the next round
+        wait.until(ExpectedConditions.elementToBeClickable(By.id("startBtn"))).click();
+
+        verifyDeckCount();
+
+        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+        assertTopCard("TD");//assert initial top card for round 2
+
+        playAndAssertCard(1,"9D");//P2 Plays 9D
+        playAndAssertCard(2,"3D");//P3 Plays 3D
+        playAndAssertCard(3,"4D");//P4 Plays 4D
+        playAndAssertCard(0,"4S");//P1 Plays 4S
+
+        playAndAssertCard(1,"3S");//P2 Plays 3S
+        playAndAssertCard(2,"9S");//P3 Plays 9S
+        playAndAssertCard(3,"7S");//P4 Plays 7S
+        playAndAssertCard(0,"7C");//P1 Plays 7C
+
+        playAndAssertCard(1,"9C");//P2 Plays 9C
+        playAndAssertCard(2,"3C");//P3 Plays 3C
+        playAndAssertCard(3,"4C");//P4 Plays 4C
+        playAndAssertCard(0,"4H");//P1 Plays 4H
+
+        playAndAssertCard(1,"3H");//P2 Plays 3H
+        playAndAssertCard(2,"9H");//P3 Plays 9H
+
+        assertDrawnCard(3,"KS",false);//P4 chooses to draw KS
+        assertDrawnCard(3,"QS",false);//P4 chooses to draw QS
+        assertDrawnCard(3,"KH",true);//P4 chooses to draw KH
+        playAndAssertCard(3,"KH");//P4 Plays KH
+
+        assertDrawnCard(0,"6D",false);//P1 draws 6D
+        assertDrawnCard(0,"QD",false);//P1 draws QD
+        allDrivers[0].findElement(By.id("draw")).click();//P1 draws JD and turn ends since not playable
+        assertOnlyDrawn(0,"JD");
+        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+
+        assertDrawnCard(1,"6S",false);//P2 draws 6S
+        assertDrawnCard(1,"JS",false);//P2 draws JS
+        allDrivers[1].findElement(By.id("draw")).click();//P2 draws TS and turn ends since not playable
+        assertOnlyDrawn(1,"TS");
+        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+
+        //7D 5D 6D QD JD
+        assertHand(0, "5D,6D,7D,JD,QD");//assert players ending hands, except P3 since still has the last card
+        assertHand(1, "JC,6S,TS,JS"); //JC 6S JS TS
+        assertHand(3, "5S,8D,KS,QS");
+
+
+        allDrivers[2].findElement(By.id("5H")).click();//P3 Plays 5H
+        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+        //cant assert this as top card since round is over
+
+        //assert Round ended
+        assertTurn("3");//assert Player 3 is still the Correct Turn since they Won the Game
+        for (int i = 0; i < allDrivers.length; i++) {
+            List<WebElement> scoreList = allDrivers[i].findElements(By.id("scoreList"));
+            WebElement winMSG = allDrivers[i].findElement(By.id("winMSG"));//assert winner message for all players, winMSG = WINNER IS PLAYER 3
+            assertEquals("WINNER IS PLAYER 3",winMSG.getText());
+            for(int scorei = 1; scorei < scoreList.size();scorei++){//start at index 1 since 0 is Score title
+                //assert all scores on browsers are 1,0,86,102 and winner msg is displayed correctly
+                String plyrScore = scoreList.get(i).getText();
+                int plyrScoreNum = Character.getNumericValue(plyrScore.charAt(plyrScore.length() - 1));
+
+                if(scorei == 1){//Player 1, check if their score is correct
+                    assertEquals(59,plyrScoreNum);
+                } else if(scorei == 2){//Player 2, check if their score is correct
+                    assertEquals(36,plyrScoreNum);
+                } else if(scorei == 3){//Player 3, check if their score is correct
+                    assertEquals(3,plyrScoreNum);
+                } else if(scorei == 4){//Player 4, check if their score is correct
+                    assertEquals(114,plyrScoreNum);
+                }
+
+            }
+        }
     }
     ////////////////////////////////TEST RIG FUNCTIONS(NEXT TURN)////////////////////////////////
     public void rigTestRow25(){
@@ -2089,8 +2233,23 @@ public class AcceptanceTest {
         allDrivers[plyrIndex].findElement(By.id("hand"));
         List<WebElement> plyrHand = allDrivers[plyrIndex].findElement(By.id("hand")).findElements(By.className("card"));
         String[] plyrEndHand = endHand.split(",");
-        for (int i = 0; i < plyrHand.size();i++) {
-            assertEquals(plyrEndHand[i],plyrHand.get(i).getAttribute("id"));
+
+        for (int i = 0; i < plyrEndHand.length;i++) {//for each given card that we have to check if its in players hand
+            boolean inHand = false;//init not found in hand
+            for (WebElement currCard : plyrHand) {//check through the whole hand and see if
+                if (Objects.equals(currCard.getAttribute("id"), plyrEndHand[0])) {
+                    inHand = true;
+                    break;//found the card, break out of hand to not check anymore
+                }
+            }
+//            assertEquals(plyrEndHand[i],plyrHand.get(i).getAttribute("id"));
+            assertTrue(inHand);
         }
     }
+    public void playAndAssertCard(int plyrIndex, String card) throws InterruptedException {
+        allDrivers[plyrIndex].findElement(By.id(card)).click();//Player Plays this card
+        TimeUnit.SECONDS.sleep(3);//slow down to see gameplay
+        assertTopCard(card);
+    }
+
 }

@@ -181,7 +181,8 @@ public class GameLogic{
                         }
                     }
                 }
-                p.setScore(score);
+//                p.setScore(score);
+                p.addScore(score);//fixed the bug above, it doesn't add the score after a round ends, just sets it to the score of the Round just Played
             }
         }
     }
