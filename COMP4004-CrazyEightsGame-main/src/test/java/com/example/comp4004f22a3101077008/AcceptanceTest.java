@@ -54,23 +54,42 @@ public class AcceptanceTest {
         for (int i = 0; i < allDrivers.length; i++) {
             allDrivers[i] = new ChromeDriver(options);
             allDrivers[i].get("http://localhost:" + port);
-            //arranges and moves windows to left screen
+            //arranges and moves windows to left screen, or main screen
             int screenWidth = 1920;
             int screenHeight = 1080;
             int x,y;
-            if (i == 0){
-                x = -screenWidth;//0
-                y = 0;
-            } else if (i == 1) {
-                x = screenWidth/2 - screenWidth;//screenWidth/2
-                y = 0;
-            } else if (i == 2) {
-                x = -screenWidth;//0
-                y = screenHeight/2;
-            }else{
-                x = screenWidth/2 - screenWidth;//screenWidth/2
-                y = screenHeight/2;
+            boolean mainScreen = true;//set as false to display browsers in left monitor
+
+            if (mainScreen){//displays browsers in main monitor
+                if (i == 0){
+                    x = 0;//0
+                    y = 0;
+                } else if (i == 1) {
+                    x = screenWidth/2;
+                    y = 0;
+                } else if (i == 2) {
+                    x = 0;
+                    y = screenHeight/2;
+                }else{
+                    x = screenWidth/2;
+                    y = screenHeight/2;
+                }
+            }else{//displays all browsers in left monitor 1920x1080
+                if (i == 0){
+                    x = -screenWidth;//0
+                    y = 0;
+                } else if (i == 1) {
+                    x = screenWidth/2 - screenWidth;//screenWidth/2
+                    y = 0;
+                } else if (i == 2) {
+                    x = -screenWidth;//0
+                    y = screenHeight/2;
+                }else{
+                    x = screenWidth/2 - screenWidth;//screenWidth/2
+                    y = screenHeight/2;
+                }
             }
+
             allDrivers[i].manage().window().setPosition(new org.openqa.selenium.Point(x, y));
             allDrivers[i].manage().window().setSize(new org.openqa.selenium.Dimension(screenWidth/2, screenHeight/2));
 
