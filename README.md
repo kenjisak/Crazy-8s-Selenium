@@ -1,1 +1,1 @@
-# 101160737-Assignment3-COMP4004
+# Crazy 8s Web based Card game, tested with Selenium
